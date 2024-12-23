@@ -24,7 +24,9 @@ const { cart,user} = useContext(AuthedUserContext);
                 {cart.reduce((total, item) => total + item.quantity, 0)})
               </Link>
             </li>
-
+            <li>
+              <Link to="/orderslist">My Orders</Link>
+            </li>
             <li>
               <Link to="" onClick={handleSignout}>
                 Sign Out

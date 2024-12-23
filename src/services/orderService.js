@@ -29,37 +29,47 @@ const request = async (url, options = {}) => {
   }
 };
 
-const getUserRole = () => {
+const getUserId = () => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token found. Please log in.");
 
   try {
     const decoded = jwtDecode(token);
+    
     if (!decoded || !decoded.role) {
       throw new Error("Invalid token format or role missing.");
     }
-    return decoded.role;
+    return decoded.id;  //new
   } catch (error) {
     console.error("Failed to decode token:", error.message);
     throw new Error("Invalid token. Please log in again.");
   }
 };
 
-const allOrders = () => request(BASE_URL);
-const showOrder = (orderId) => {
+const getAllOrders = async () => {
+  const userId = getUserId(); // 获取当前用户 ID
+  return request(BASE_URL, {
+    method: "GET",
+  });
+};
+// const allorders =()=>{
+//    return request(BASE_URL, {
+//      method: "GET",
+//    });
+// }
+
+ const showOrder = (orderId) => {
+ 
   return request(`${BASE_URL}/${orderId}`, {
     method: "GET",
   });
 };
 
 const createOrder = async (orderFormData) => {
-  const role = getUserRole();
-//   if (role !== "customer")
-//     throw new Error("Permission denied.Only customer can create products.");
   return request(`${BASE_URL}`, {
     method: "POST",
     body: JSON.stringify(orderFormData),
   });
 };
 
-export { allOrders, showOrder,createOrder };
+export { getAllOrders, showOrder, createOrder };

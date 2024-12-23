@@ -37,11 +37,11 @@ const signin = async (user) => {
       body: JSON.stringify(user),
     });
     const json = await res.json();
-    console.log("Signin response:", json); 
+    // console.log("Signin response:", json); 
 
     if (json.data.token) {
       localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
-      console.log("Token stored:", localStorage.getItem("token"));
+      // console.log("Token stored:", localStorage.getItem("token"));
 
       const user = JSON.parse(atob(json.data.token.split(".")[1]));
 
@@ -58,9 +58,20 @@ const signin = async (user) => {
 
 const getUser = () => {
   const token = localStorage.getItem("token");
-  if (!token) return null;
-  const user = JSON.parse(atob(token.split(".")[1]));
-  return user;
+  if (!token) {
+    console.log("No token found!");
+    return null;
+  }   //新
+  try {
+     const user = JSON.parse(atob(token.split(".")[1]));
+      // console.log("Decoded user from token:", user);
+    return user;
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+ 
+ 
 };
 
 const signout = () => {

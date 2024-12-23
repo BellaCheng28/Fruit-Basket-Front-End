@@ -13,6 +13,7 @@ import ProductForm from"./components/ProductForm/ProductForm"
 import * as productService from "./services/productService";
 import ReviewForm from "./components/ReviewForm/ReviewForm";
 import Orders from "./components/Orders/Orders";
+import OrdersPage from "./components/OrdersPage/OrdersPage";
 import ShoppingCart from "./components/ShoppingCart.jsx/ShoppingCart";
 import * as orderService from"./services/orderService"
 
@@ -25,6 +26,7 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const[cart,setCart]=useState([])
   const [orders, setOrders] = useState([]);
+  const[reviews,setReivews] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("token"); // 从 localStorage 获取 token
     if (token) {
@@ -34,6 +36,11 @@ const App = () => {
   }, []);
 
   const  addToCart =(product,quantity)=>{
+    if (!user) {
+      // 如果没有用户信息，提示用户登录
+      alert("Please log in to add items to your cart.");
+      return;
+    }
     setCart((prevCart)=>{
       const existingProduct = prevCart.find(
         (item) => item.product._id === product._id
@@ -46,14 +53,25 @@ const App = () => {
             : item
         );
       }
-      return [...prevCart, { product, quantity }];
+      return [
+        ...prevCart,
+        {
+          product,
+          quantity,
+          purchasePrice:product.price,
+          user_id: user._id,
+          username: user.username,
+        },
+      ];
     });
   };
   const removeFromCart =(productId)=>{
-    setCart((prevCart)=>prevCart.filter((item)=>(
-      item.product_id !== productId
-    ))
-  )
+    console.log("Removing product with id:", productId);
+    setCart((prevCart) => {
+     const newCart = prevCart.filter((item) => item.product._id !== productId);
+     console.log("Updated cart:", newCart); // 查看更新后的 cart
+     return newCart;
+   });
   };
   const clearCart=()=>setCart([])
 
@@ -69,18 +87,6 @@ const App = () => {
     };
     fetchProducts();
   }, []);
-
- useEffect(() => {
-  const fetchOrders = async()=>{
-   try {
-     const orders = await orderService.allOrders();
-     setOrders(orders);
-   } catch (error) {
-   }
-  }
-   fetchOrders();
-
- },[]);
 
 
 
@@ -113,8 +119,11 @@ const App = () => {
         <Route path="/products" element={<ProductList products={products} />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
+        <Route path="/products/productId/reviews" element={<ReviewForm />} />
+
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/orders" element={<Orders/>} />
+        <Route path="/orderslist" element={<OrdersPage/>} />
         
 
         {/* customer Routes: */}

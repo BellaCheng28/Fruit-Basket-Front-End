@@ -1,4 +1,4 @@
-const BASE_URL = `${import.meta.env.VITE_EXPRESS_BACKEND_URL}/products`;
+const BASE_URL = `${import.meta.env.VITE_EXPRESS_BACKEND_URL}`;
 import { jwtDecode } from "jwt-decode";
 
 const request = async (url, options = {}) => {
@@ -13,6 +13,7 @@ const request = async (url, options = {}) => {
     const res = await fetch(url, {
       ...options,
       headers: { ...defaultHeaders, ...options.headers },
+      mode:"cors",
     });
     if (!res.ok) {
       const error = await res.json();
@@ -24,6 +25,19 @@ const request = async (url, options = {}) => {
     throw error;
   }
 };
+
+const getUserId = () => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No authentication token found. Please log in.");
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.id; // 返回用户 ID
+  } catch (error) {
+    console.error("Failed to decode token:", error.message);
+    throw new Error("Invalid token. Please log in again.");
+  }
+};
+
 
 //get roles
 const getUserRole = () => {
@@ -42,10 +56,10 @@ const getUserRole = () => {
   }
 };
 
-const allProducts = () => request(BASE_URL);
+const allProducts = () => request(`${BASE_URL}/products`);
 
 const showProduct = (productId) => {
-  return request(`${BASE_URL}/${productId}`, {
+  return request(`${BASE_URL}/products/${productId}`, {
     method: "GET",
   });
 };
@@ -54,17 +68,18 @@ const createProduct = async (productFormData) => {
   const role = getUserRole();
   if (role !== "admin")
     throw new Error("Permission denied.Only admins can create products.");
-  return request(`${BASE_URL}`, {
+  return request(`${BASE_URL}/products`, {
     method: "POST",
     body: JSON.stringify(productFormData),
   });
 };
 
+
 const updateProduct = (productId, productFormData) => {
   const role = getUserRole();
   if (role !== "admin")
     throw new Error("Permission denied.Only admins can create products.");
-  return request(`${BASE_URL}/${productId}`, {
+  return request(`${BASE_URL}/products/${productId}`, {
     method: "PUT",
     body: JSON.stringify(productFormData),
   });
@@ -74,15 +89,18 @@ const deleteProduct = (productId) => {
   const role = getUserRole();
   if (role !== "admin")
     throw new Error("Permission denied.Only admins can create products.");
-  return request(`${BASE_URL}/${productId}`, {
+  return request(`${BASE_URL}/products/${productId}`, {
     method: "DELETE",
   });
 };
 
-const allReviews = () => request(`${BASE_URL}/${productId}/reviews`);
+// const allReviews = () => request(`${BASE_URL}/review`);
 
-const showReview = (productId, reviewId) => {
-  return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
+const showReview = (productId) => {
+  if (!productId) {
+    throw new Error("Product ID is required to fetch reviews.");
+  }
+  return request(`${BASE_URL}/review/${productId}`, {
     method: "GET",
   });
 };
@@ -90,39 +108,39 @@ const showReview = (productId, reviewId) => {
 
 const createReview = async(productId,reviewFormData) =>{
      const role = getUserRole();
-     return request(`${BASE_URL}/${productId}/reviews`, {
+     return request(`${BASE_URL}/review`, {
        method: "POST",
        body: JSON.stringify(reviewFormData),
      }); 
   }
 
-const updateReview = async (productId, reviewId) => {
-  const role = getUserRole();
-  return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
-    method: "PUT",
-    body: JSON.stringify(reviewFormData),
-  });
-};
+// const updateReview = async (productId, reviewId) => {
+//   const role = getUserRole();
+//   return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
+//     method: "PUT",
+//     body: JSON.stringify(reviewFormData),
+//   });
+// };
 
-const deleteReview = async (productId, reviewId) => {
-  const role = getUserRole();
-  return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
-    method: "DELETE",
-    body: JSON.stringify(reviewFormData),
-  });
-};
-
+// const deleteReview = async (productId, reviewId) => {
+//   const role = getUserRole();
+//   return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
+//     method: "DELETE",
+//     body: JSON.stringify(reviewFormData),
+//   });
+// };
+//  updateReview,
+//   deleteReview,
 
 
 export {
+  getUserId,
   getUserRole,
   allProducts,
   showProduct,
   createProduct,
   updateProduct,
   deleteProduct,
-  allReviews,
+  showReview,
   createReview,
-  updateReview,
-  deleteReview,
 };
