@@ -4,7 +4,6 @@ import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import * as orderService from "../../services/orderService";
-
 const ProductDetail = () => {
   const navigate = useNavigate();
   const { productId } = useParams(); // get URL productId
@@ -16,32 +15,47 @@ const ProductDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [userId, setUserId] = useState(null);
-  const user_id = user._id;
-
+  const [isLoading, setIsLoading] = useState(true);
+  // const user_id = user._id;
   // 确保用户信息和 productId 已经加载再发起请求
   useEffect(() => {
     if (!productId || !user) return;
-
     const fetchProductDetails = async () => {
       try {
         // 获取商品信息
         const productData = await productService.showProduct(productId);
         setProduct(productData);
-        setReviews(productData.reviews || []);
+        // setReviews(productData.reviews || []);
+
+        const reviewsData = await productService.showReview(productId);
+        const reviewsWithUsernames = await Promise.all(
+          reviewsData.map(async (review) => {
+            console.log("reviewsData",reviewsData);
+            const username =
+              review.user_id && review.user_id.username
+                ? review.user_id.username
+                : "Unknown";
+            return {
+              ...review,
+              username,
+            };
+          })
+        );
+        setReviews(reviewsWithUsernames);
+
+
 
         // 设置管理员权限
         const role = productService.getUserRole();
         setIsAdmin(role === "admin");
-
         // 获取用户ID
         const userId = productService.getUserId();
         setUserId(userId);
-
         // 检查用户是否购买过该商品
         const orders = await orderService.getAllOrders();
-        console.log("Orders:", orders); 
+        console.log("Orders:", orders);
         const purchased = orders.some((order) =>
-          order.orderItems_id.some((item) => item._id === productId)
+          order.orderItems_id.some((item) => item.product_id._id === productId)
         );
         console.log("Has purchased:", purchased);
         setHasPurchased(purchased);
@@ -49,37 +63,8 @@ const ProductDetail = () => {
         console.error("Error fetching product details:", error);
       }
     };
-
     fetchProductDetails();
   }, [productId, user]); // 仅当 productId 或 user 发生变化时才触发
-  // 获取评论并填充用户名
-  useEffect(() => {
-    if (!productId) return;
-
-    const fetchReviews = async () => {
-      try {
-        const reviewsData = await productService.showReview(productId);
-       console.log("reviewsData", reviewsData);
-        // 请求所有评论的用户信息
-        const reviewsWithUsernames = await Promise.all(
-          reviewsData.map(async (review) => {
-            // 假设 getUserById 接口返回一个包含 username 的用户对象
-            const userData = await productService.getUserId(review.user_id);
-            return {
-              ...review,
-              username: userData ? userData.username : "Unknown",
-            };
-          })
-        );
-        // console.log("userData", userData);
-        setReviews(reviewsWithUsernames);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
-    fetchReviews();
-  }, [productId]); // 依赖 productId，每次商品ID变化时触发
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
@@ -93,11 +78,9 @@ const ProductDetail = () => {
       console.error("Error deleting product:", error.message);
     }
   };
-
   const handleEdit = () => {
     navigate(`/products/${productId}/edit`, { state: { product } });
   };
-
   const handleAddToCart = () => {
     if (quantity === 0) {
       alert("Please select a quantity greater than 0.");
@@ -106,18 +89,24 @@ const ProductDetail = () => {
     addToCart(product, quantity);
     alert(`${quantity} of ${product.name} added to cart!`);
   };
-
   const handleAddReview = async (reviewFormData) => {
-    const newReview = await productService.createReview(
-      productId,
-      reviewFormData
-    );
-    setReviews((prevReviews) => [...prevReviews, newReview]);
+   try {
+    const reviewData = {
+      text: reviewFormData.text,
+      user_id: user._id,
+      username: user._id.username,
+      product_id: productId,
+    };
+     console.log("Submitting review data:", reviewData);
+     const newReview = await productService.createReview(productId, reviewData);
+     setReviews((PrevReviews)=>[...PrevReviews,newReview]);
     setReviewFormVisible(false);
+   } catch (error) {
+    
+   }
   };
 
   if (!product) return <div>Product not found</div>;
-
   return (
     <>
       <div>
@@ -140,7 +129,6 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
-
       <div>
         <h2>Reviews</h2>
         {hasPurchased && (
@@ -154,8 +142,7 @@ const ProductDetail = () => {
         {reviews.length === 0 && <p>There are no Reviews.</p>}
         {reviews.map((review) => (
           <article key={review._id}>
-            <h3>{review.user_id ? review.user_id.username : "Unknown"}</h3>
-            
+            <h3>{review.username}</h3>
             <p>{review.text}</p>
           </article>
         ))}
@@ -163,10 +150,4 @@ const ProductDetail = () => {
     </>
   );
 };
-
 export default ProductDetail;
-
-
-
-
-

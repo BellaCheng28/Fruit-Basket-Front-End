@@ -119,7 +119,7 @@ const showReview = (productId) => {
 
 
 const createReview = async(productId,reviewFormData) =>{
-     const role = getUserRole();
+    //  const role = getUserRole();
      return request(`${BASE_URL}/review`, {
        method: "POST",
        body: JSON.stringify(reviewFormData),

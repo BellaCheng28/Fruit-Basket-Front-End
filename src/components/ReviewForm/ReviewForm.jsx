@@ -4,16 +4,14 @@ import { useParams,useNavigate } from 'react-router-dom';
 import * as productService from'../../services/productService';
 
 
-const ReviewForm = () => {
+const ReviewForm = ({handleAddReview}) => {
   const { user } = useContext(AuthedUserContext);
   const { productId, reviewId } = useParams();
   const [formData, setFormData] = useState({
     text: "",
   });
   const navigate = useNavigate();
-  const user_id = user._id;
-
- 
+  // const user_id = user._id;
 
   if (!user) {
     console.error("User not logged in.");
@@ -26,19 +24,9 @@ const ReviewForm = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleCreateReview(formData);
+    handleAddReview(formData);
     setFormData({ text: "" });
   };
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const productData = await productService.showProduct(productId);
-      setFormData(
-        productData.reviews.find((review) => review._id === reviewId)
-      );
-    };
-    if (productId && reviewId) fetchProduct();
-  }, [productId, reviewId]);
 
   
   return (
@@ -56,8 +44,6 @@ const ReviewForm = () => {
     </form>
   );
 };
-
-
 
 
 
