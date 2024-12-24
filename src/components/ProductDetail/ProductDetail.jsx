@@ -1,10 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams,useNavigate } from "react-router-dom";
-import * as productService from "../../services/productService"; 
-import { AuthedUserContext } from "../../App"; 
+import { useParams, useNavigate } from "react-router-dom";
+import * as productService from "../../services/productService";
+import { AuthedUserContext } from "../../App";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import * as orderService from "../../services/orderService";
-
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -15,58 +14,72 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(0);
   const [hasPurchased, setHasPurchased] = useState(false);
   const [reviews, setReviews] = useState([]);
- const [isReviewFormVisible, setReviewFormVisible] = useState(false);
+  const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [userId, setUserId] = useState(null);
   const user_id = user._id;
 
+  // 确保用户信息和 productId 已经加载再发起请求
   useEffect(() => {
-    const fetchProduct = async () => {
+    if (!productId || !user) return;
+
+    const fetchProductDetails = async () => {
       try {
-        const productData = await productService.showProduct(productId); // get product detail
+        // 获取商品信息
+        const productData = await productService.showProduct(productId);
         setProduct(productData);
-         if (productData) {
-           setProduct(productData); // 仅当获取到数据时才设置
-         } else {
-           console.error("No product found for this ID:", productId);
-         }
         setReviews(productData.reviews || []);
+
+        // 设置管理员权限
+        const role = productService.getUserRole();
+        setIsAdmin(role === "admin");
+
+        // 获取用户ID
+        const userId = productService.getUserId();
+        setUserId(userId);
+
+        // 检查用户是否购买过该商品
+        const orders = await orderService.getAllOrders();
+        console.log("Orders:", orders); 
+        const purchased = orders.some((order) =>
+          order.orderItems_id.some((item) => item._id === productId)
+        );
+        console.log("Has purchased:", purchased);
+        setHasPurchased(purchased);
       } catch (error) {
-        console.error("Failed to fetch product details:", error);
+        console.error("Error fetching product details:", error);
       }
     };
-    const role = productService.getUserRole();
-    setIsAdmin(role === "admin");   //疑惑
-    fetchProduct();
-  }, [productId]);
 
+    fetchProductDetails();
+  }, [productId, user]); // 仅当 productId 或 user 发生变化时才触发
+  // 获取评论并填充用户名
+  useEffect(() => {
+    if (!productId) return;
 
-  // new
-useEffect(() => {
-  // 确保只有在 product 已经加载并且用户对象也存在时才执行检查
-  if (!product || !user) {
-    return;
-  }
+    const fetchReviews = async () => {
+      try {
+        const reviewsData = await productService.showReview(productId);
+       console.log("reviewsData", reviewsData);
+        // 请求所有评论的用户信息
+        const reviewsWithUsernames = await Promise.all(
+          reviewsData.map(async (review) => {
+            // 假设 getUserById 接口返回一个包含 username 的用户对象
+            const userData = await productService.getUserId(review.user_id);
+            return {
+              ...review,
+              username: userData ? userData.username : "Unknown",
+            };
+          })
+        );
+        // console.log("userData", userData);
+        setReviews(reviewsWithUsernames);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
 
-  // 检查用户是否已购买过该商品
-  const checkIfPurchased = async () => {
-
-    try {
-      const orders = await orderService.getAllOrders(); // 获取用户所有订单
-      // console.log("orders:", orders);
-
-      const hasPurchasedProduct = orders.some((order) => {
-        // 假设订单中的商品信息存储在 orderItems_id 中
-        return order.orderItems_id.some((item) => item._id === productId);
-      });
-
-      setHasPurchased(hasPurchasedProduct);
-    } catch (error) {
-      console.error("Failed to fetch user orders:", error);
-    }
-  };
-
-  checkIfPurchased();
-}, [productId, user, product]); 
+    fetchReviews();
+  }, [productId]); // 依赖 productId，每次商品ID变化时触发
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
@@ -81,7 +94,7 @@ useEffect(() => {
     }
   };
 
-  const handleEdit = async () => {
+  const handleEdit = () => {
     navigate(`/products/${productId}/edit`, { state: { product } });
   };
 
@@ -94,94 +107,16 @@ useEffect(() => {
     alert(`${quantity} of ${product.name} added to cart!`);
   };
 
-//reviews
-useEffect(() => {
-  const fetchUserId = () => {
-    try {
-      const userId = productService.getUserId(); // 从 productService 获取用户 ID
-      setUserId(userId);
-    } catch (error) {
-      console.error("Error fetching user ID:", error);
-    }
-  };
-
-  fetchUserId();
-}, []);
-
-useEffect(() => {
-  const fetchProductDetails = async () => {
-    try {
-      // 获取商品信息
-      const productData = await productService.showProduct(productId);
-      setProduct(productData);
-
-      // 获取商品评论
-      const reviewsData = await productService.showReview(productId);
-      setReviews(reviewsData);
-
-      // 检查用户是否购买过该商品
-      const purchased = await checkIfPurchased(productId, userId);
-      setHasPurchased(purchased);
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (userId) {
-    fetchProductDetails();
-  }
-}, [productId, userId]);
-// const checkIfPurchased = async (productId, userId) => {
-//   // 假设实现一个后端接口来验证用户是否购买过该商品
-//   return true; // 假设已经购买，返回 true
-// };
-
-  // useEffect(() => {
-  //   const fetchReview = async (productId) => {
-  //     try {
-  //       console.log("Fetching reviews for product ID:", productId);
-  //       const reviews = await productService.showReview(productId);
-  //       setReviews(reviews);
-  //     } catch (error) {}
-  //   };
-  //   fetchReview(productId);
-  // }, []);
-
   const handleAddReview = async (reviewFormData) => {
     const newReview = await productService.createReview(
       productId,
       reviewFormData
     );
-     setReviews((prevReviews) => [...prevReviews, newReview]); 
-    setReviewFormVisible(false); 
-    // setProduct({ ...product, reviews: [...product.reviews, newReview] });
+    setReviews((prevReviews) => [...prevReviews, newReview]);
+    setReviewFormVisible(false);
   };
-  //  if (loading) return <div>Loading...</div>;
-   if (!product) return <div>Product not found</div>;
-  //  const handleCreateReview = async () => {
-  //    try {
-  //      const reviewFormData = {
-  //        user_id,
-  //        product_id: item.product._id,
-  //        text: "",
-  //      };
-  //      console.log("Review data to send:", reviewFormData);
-  //      const response = await productService.createReview(reviewFormData);
-  //      console.log("Review created successfully:", response);
-  //    } catch (error) {
-  //      console.error("Error creating Review:", error.message);
-  //    }
-  //  };
 
-  // const handleDeleteReview = async(reviewId)=>{
-  //   const deleteReview = await productService.deleteReview(productId,reviewId)
-  //   setProduct({
-  //     ...product,
-  //     reviews:product.reviews.filter((review)=>review._id !== reviewId)
-  //   });
-  // };
+  if (!product) return <div>Product not found</div>;
 
   return (
     <>
@@ -198,7 +133,6 @@ useEffect(() => {
           <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
           <button onClick={handleAddToCart}>Add to cart</button>
         </div>
-        {/* admin can edit and delete product */}
         {isAdmin && (
           <div>
             <button onClick={handleEdit}>Edit</button>
@@ -218,18 +152,21 @@ useEffect(() => {
           <ReviewForm handleAddReview={handleAddReview} />
         )}
         {reviews.length === 0 && <p>There are no Reviews.</p>}
-        {reviews.map((review) => {
-          console.log("review:",review);
-          return (
-        <article key={review._id}>
-        <h3>{review.username}</h3>
-         <p>{review.text}</p>
-    </article>
-  );
-})}
+        {reviews.map((review) => (
+          <article key={review._id}>
+            <h3>{review.user_id ? review.user_id.username : "Unknown"}</h3>
+            
+            <p>{review.text}</p>
+          </article>
+        ))}
       </div>
     </>
   );
 };
 
 export default ProductDetail;
+
+
+
+
+

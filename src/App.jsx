@@ -124,14 +124,8 @@ const App = () => {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/orders" element={<Orders/>} />
         <Route path="/orderslist" element={<OrdersPage/>} />
+         <Route path="/dashboard" element={<Dashboard />} />
         
-
-        {/* customer Routes: */}
-        {isCustomer && (
-          <>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </>
-        )}
         {/* admin Routes */}
         {isAdmin && (
           <>

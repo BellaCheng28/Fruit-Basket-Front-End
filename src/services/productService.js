@@ -37,9 +37,20 @@ const getUserId = () => {
     throw new Error("Invalid token. Please log in again.");
   }
 };
-
+// const getUserById = async (userId) => {
+//   try {
+//     const response = await fetch(`${BASE_URL}/users/${userId}`);
+//     const user = await response.json();
+//     return user;
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//     throw error;
+//   }
+// }; 
 
 //get roles
+
+
 const getUserRole = () => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token found. Please log in.");
@@ -55,6 +66,7 @@ const getUserRole = () => {
     throw new Error("Invalid token. Please log in again.");
   }
 };
+
 
 const allProducts = () => request(`${BASE_URL}/products`);
 
@@ -114,6 +126,7 @@ const createReview = async(productId,reviewFormData) =>{
      }); 
   }
 
+  
 // const updateReview = async (productId, reviewId) => {
 //   const role = getUserRole();
 //   return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
@@ -134,6 +147,7 @@ const createReview = async(productId,reviewFormData) =>{
 
 
 export {
+  
   getUserId,
   getUserRole,
   allProducts,

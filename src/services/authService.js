@@ -9,7 +9,7 @@ const signup = async (formData) => {
       body: JSON.stringify(formData),
     });
     const json = await res.json();
-
+    console.log("Response from backend:", json);
     if (json.data.token) {
       localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
 
@@ -70,12 +70,24 @@ const getUser = () => {
     console.error("Failed to decode token:", error);
     return null;
   }
- 
- 
 };
+
+//get all userId
+const getUserById = async (userId) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/users/${userId}`);
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+};
+
+
 
 const signout = () => {
   localStorage.removeItem("token");
 };
 
-export { signup, signin, getUser, signout };
+export { signup, signin, getUser,getUserById, signout };

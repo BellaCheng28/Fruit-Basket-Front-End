@@ -11,7 +11,9 @@ const SignupForm = (props) => {
     username: "",
     password: "",
     passwordConf: "",
+
   });
+  const { username, password, passwordConf } = formData;
 
   const updateMessage = (msg) => {
     setMessage(msg);
@@ -23,6 +25,11 @@ const SignupForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+     if (password !== passwordConf) {
+       setMessage("Passwords do not match.");
+       return;
+     }
     try {
       const newUserResponse = await authService.signup(formData);
       props.setUser(newUserResponse.user);
@@ -31,8 +38,6 @@ const SignupForm = (props) => {
       updateMessage(err.message);
     }
   };
-
-  const { username, password, passwordConf } = formData;
 
   const isFormInvalid = () => {
     return !(username && password && password === passwordConf);
