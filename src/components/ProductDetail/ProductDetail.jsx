@@ -94,10 +94,11 @@ const ProductDetail = () => {
     const reviewData = {
       text: reviewFormData.text,
       user_id: user._id,
-      username: user._id.username,
+      username: user.username,
       product_id: productId,
     };
      console.log("Submitting review data:", reviewData);
+
      const newReview = await productService.createReview(productId, reviewData);
      setReviews((PrevReviews)=>[...PrevReviews,newReview]);
     setReviewFormVisible(false);

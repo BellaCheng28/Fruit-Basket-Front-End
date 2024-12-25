@@ -1,12 +1,11 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthedUserContext } from "../../App";
-import { useParams,useNavigate } from 'react-router-dom';
-import * as productService from'../../services/productService';
+import { useNavigate } from "react-router-dom";
+// import * as productService from "../../services/productService";
 
-
-const ReviewForm = ({handleAddReview}) => {
+const ReviewForm = ({ handleAddReview }) => {
   const { user } = useContext(AuthedUserContext);
-  const { productId, reviewId } = useParams();
+  // const { productId, reviewId } = useParams();
   const [formData, setFormData] = useState({
     text: "",
   });
@@ -28,7 +27,6 @@ const ReviewForm = ({handleAddReview}) => {
     setFormData({ text: "" });
   };
 
-  
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="text-input">Your comment:</label>
@@ -44,7 +42,5 @@ const ReviewForm = ({handleAddReview}) => {
     </form>
   );
 };
-
-
 
 export default ReviewForm;
