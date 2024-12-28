@@ -4,7 +4,7 @@ import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
 import uploadFileToCloudinary from "../../services/cloudinaryService";
 
-const ProductForm = ({ products, setProducts }) => {
+const ProductForm = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const location = useLocation();
@@ -16,8 +16,9 @@ const ProductForm = ({ products, setProducts }) => {
     image: null, // 添加 image 字段
   });
 
-  // const [image, setImage] = useState(null);
-  const user = useContext(AuthedUserContext); // get user
+  const { user, handleEditProduct, handleCreateProduct } =
+    useContext(AuthedUserContext);
+  
   const [isAdmin, setIsAdmin] = useState(false);
   const isEditMode = !!productId;
 
@@ -34,30 +35,24 @@ const ProductForm = ({ products, setProducts }) => {
     checkAdminRole();
   }, []);
 
-  // Initialize form data
+  // Initialize form data for edit mode
   useEffect(() => {
     if (!isEditMode) return;
-
     const initializeFormData = async () => {
       const product = location.state?.product;
       // Get product from state if passed
       if (product) {
         setFormData({
-          name: product.name,
-          image_url: product.image_url,
+          ...product,
           price: parseFloat(product.price),
-          description: product.description,
-          
         });
       } else {
         // Fetch product if not passed
         try {
           const productData = await productService.showProduct(productId);
           setFormData({
-            name: productData.name,
-            image_url: productData.image_url,
+            ...productData,
             price: parseFloat(productData.price),
-            description: productData.description,
             
           });
         } catch (error) {
@@ -68,13 +63,15 @@ const ProductForm = ({ products, setProducts }) => {
     initializeFormData();
   }, [isEditMode, productId, location.state]);
 
-  const handleChange = (e) => {
+  // Handle form data change
+  const handleChange = async (e) => {
     const { name, value } = e.target;
     // console.log('name',value)
     setFormData((prev) => ({ ...prev, [name]: value }));
+
   };
 
-  // Handle image file change
+  // Handle image file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setFormData((prev) => ({
@@ -83,12 +80,16 @@ const ProductForm = ({ products, setProducts }) => {
     }));
   };
 
+  // Upload image to Cloudinary when file is selected
   useEffect(() => {
     if (formData.image) {
       const uploadImage = async () => {
-       try {
-          const imageUrl = await uploadFileToCloudinary(formData.image, formData.name); // 传递产品名称
-          console.log("Uploaded Image URL:", imageUrl);
+        try {
+          const imageUrl = await uploadFileToCloudinary(
+            formData.image,
+            formData.name
+          ); // 传递产品名称
+          // console.log("Uploaded Image URL:", imageUrl);
           setFormData((prev) => ({ ...prev, image_url: imageUrl }));
         } catch (error) {
           console.error("Error uploading image:", error);
@@ -99,37 +100,33 @@ const ProductForm = ({ products, setProducts }) => {
     }
   }, [formData.image]); // Only trigger this when formData.image changes
 
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const price = parseFloat(formData.price);
     if (!formData.name || !formData.image_url) {
       console.error("Product name and image are required!");
       return;
     }
+
     try {
-      
       // 准备提交的数据，确保 image_url 已正确设置
-     const { image, ...productData } = formData;
-     productData.price = price; 
-    console.log("Product Data to send:", productData);
-    console.log(typeof price);
-   
+      const { image, ...productData } = formData;
+      productData.price = price;
+      
+
       // 创建或更新商品
       if (isEditMode) {
-        await productService.updateProduct(productId, productData);
+        const EditProduct= await productService.updateProduct(productId, productData);
         alert("Product updated successfully.");
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product._id === productId
-              ? { ...product, ...productData }
-              : product
-          )
-        );
+        handleEditProduct(EditProduct);
       } else {
-        await productService.createProduct(productData);
+        const createdProduct = await productService.createProduct(productData);
         alert("New product created successfully.");
-        setProducts((prevProducts) => [...prevProducts, productData]);
-       
+        handleCreateProduct(createdProduct);
+        
       }
 
       navigate("/products"); // Redirect to product list

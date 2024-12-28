@@ -1,27 +1,29 @@
-import { Link,useNavigate, useNavigation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { Link,useNavigate, } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
 import * as productService from "../../services/productService";
-const ProductList = ({ products }) => {
- 
-const[isAdmin,setIsAdmin]=useState(false);
-const navigate =useNavigate()
+import { AuthedUserContext } from "../../App";
+const ProductList = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+ const {products} = useContext(AuthedUserContext);
 
-useEffect(() => {
-  const checkAdmin = async () => {
-    try {
-      const role = await productService.getUserRole(); 
-      setIsAdmin(role === "admin"); 
-    } catch (error) {
-      console.error("Failed to check role:", error);
-      setIsAdmin(false); // 默认设置为非管理员
-    }
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const role = await productService.getUserRole();
+        setIsAdmin(role === "admin");
+      } catch (error) {
+        console.error("Failed to check role:", error);
+        setIsAdmin(false); // 默认设置为非管理员
+      }
+    };
+
+    checkAdmin();
+  }, []);
+
+  const handleCreateProduct = () => {
+    navigate("/products/new");
   };
-
-  checkAdmin();
-}, []);
-const handleCreateProduct=()=>{
-  navigate("/products/new");
-}
 
   return (
     <>
@@ -29,11 +31,8 @@ const handleCreateProduct=()=>{
         <h1>Product List</h1>
         <div>
           {products.map((product) => {
-             if (!product._id) {
-               console.warn("Product _id is missing", product);
-             } else {
-               console.log("Product ID:", product._id);
-             }
+            // console.log("Products:", products);
+            // console.log("product._id", product._id);
             return (
               <Link key={product._id} to={`/products/${product._id}`}>
                 <div>

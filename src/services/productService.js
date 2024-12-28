@@ -20,7 +20,7 @@ const request = async (url, options = {}) => {
 
   // 获取 token
   const token = getAuthToken();
- console.log("Authorization Token:", token);
+//  console.log("Authorization Token:", token);
   // 设置请求头
   const requestOptions = {
     method,
@@ -35,8 +35,8 @@ const request = async (url, options = {}) => {
   if ((method === "POST" || method === "PUT") && body) {
     requestOptions.body = JSON.stringify(body); // 转化为 JSON 字符串
   }
- console.log("Request URL:", url);
- console.log("Request Options:", requestOptions); 
+//  console.log("Request URL:", url);
+//  console.log("Request Options:", requestOptions); 
   try {
     const response = await fetch(url, requestOptions);
 
@@ -55,32 +55,6 @@ const request = async (url, options = {}) => {
 };
 
   
-
-
-
-
-  
-//   const defaultHeaders = {
-//     Authorization: `Bearer ${token}`,
-//     "Content-Type": "application/json",
-//   };
-
-//   try {
-//     const res = await fetch(url, {
-//       ...options,
-//       headers: { ...defaultHeaders, ...options.headers },
-//       mode: "cors",
-//     });
-//     if (!res.ok) {
-//       const error = await res.json();
-//       throw new Error(error.message || "Request failed");
-//     }
-//     return res.json();
-//   } catch (error) {
-//     console.error("Request error:", error.message);
-//     throw error;
-//   }
-// };
 
 const getUserId = () => {
    const token = getAuthToken();
@@ -192,4 +166,5 @@ export {
   deleteProduct,
   showReview,
   createReview,
+  
 };

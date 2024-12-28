@@ -4,10 +4,11 @@ import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import * as orderService from "../../services/orderService";
-const ProductDetail = ({products}) => {
+const ProductDetail = () => {
   const navigate = useNavigate();
   const { productId } = useParams(); // get URL productId
-  const { user, addToCart } = useContext(AuthedUserContext);
+  const { user, addToCart, handleDeleteProduct } =
+    useContext(AuthedUserContext);
   const [product, setProduct] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [quantity, setQuantity] = useState(0);
@@ -15,16 +16,16 @@ const ProductDetail = ({products}) => {
   const [reviews, setReviews] = useState([]);
   const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+
   const user_id = user._id;
   // 确保用户信息和 productId 已经加载再发起请求
-  console.log("Product ID from URL:", productId);;
+  console.log("Product ID from URL:", productId);
   useEffect(() => {
     if (!productId || !user) return;
     const fetchProductDetails = async () => {
       try {
         // 获取商品信息
-      
+
         const productData = await productService.showProduct(productId);
         console.log("productData", productData);
         setProduct(productData);
@@ -33,7 +34,7 @@ const ProductDetail = ({products}) => {
         const reviewsData = await productService.showReview(productId);
         const reviewsWithUsernames = await Promise.all(
           reviewsData.map(async (review) => {
-            console.log("reviewsData",reviewsData);
+            console.log("reviewsData", reviewsData);
             const username =
               review.user_id && review.user_id.username
                 ? review.user_id.username
@@ -72,10 +73,9 @@ const ProductDetail = ({products}) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-
       await productService.deleteProduct(productId), // 删除商品
-
-      alert("Product deleted successfully.");
+        alert("Product deleted successfully.");
+      handleDeleteProduct(productId);
       navigate("/products");
     } catch (error) {
       alert("Failed to delete product.");
@@ -94,21 +94,22 @@ const ProductDetail = ({products}) => {
     alert(`${quantity} of ${product.name} added to cart!`);
   };
   const handleAddReview = async (reviewFormData) => {
-   try {
-    const reviewData = {
-      text: reviewFormData.text,
-      user_id: user._id,
-      username: user.username,
-      product_id: productId,
-    };
-     console.log("Submitting review data:", reviewData);
+    try {
+      const reviewData = {
+        text: reviewFormData.text,
+        user_id: user._id,
+        username: user.username,
+        product_id: productId,
+      };
+      console.log("Submitting review data:", reviewData);
 
-     const newReview = await productService.createReview(productId, reviewData);
-     setReviews((PrevReviews)=>[...PrevReviews,newReview]);
-    setReviewFormVisible(false);
-   } catch (error) {
-    
-   }
+      const newReview = await productService.createReview(
+        productId,
+        reviewData
+      );
+      setReviews((PrevReviews) => [...PrevReviews, newReview]);
+      setReviewFormVisible(false);
+    } catch (error) {}
   };
 
   if (!product) return <div>Product not found</div>;
