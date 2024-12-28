@@ -22,18 +22,27 @@ useEffect(() => {
 const handleCreateProduct=()=>{
   navigate("/products/new");
 }
+
   return (
     <>
       <main>
         <h1>Product List</h1>
         <div>
           {products.map((product) => {
+             if (!product._id) {
+               console.warn("Product _id is missing", product);
+             } else {
+               console.log("Product ID:", product._id);
+             }
             return (
               <Link key={product._id} to={`/products/${product._id}`}>
-                {/* <p> {product.image_url && (
-                  <img scr={product.image_url} alt={product.name} />
-                )} </p> */}
-                <p>{product.name}</p>
+                <div>
+                  {product.image_url && (
+                    <img src={product.image_url} alt={product.name} />
+                  )}
+                  <p>{product.name}</p>
+                  <p>{product.description}</p>
+                </div>
               </Link>
             );
           })}

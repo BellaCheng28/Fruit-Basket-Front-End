@@ -1,4 +1,4 @@
-const BASE_URL = `${import.meta.env.VITE_EXPRESS_BACKEND_URL}/orders`;
+const BASE_URL = `${import.meta.env.VITE_EXPRESS_BACKEND_URL}`;
 import { jwtDecode } from "jwt-decode";
 
 const request = async (url, options = {}) => {
@@ -8,10 +8,11 @@ const request = async (url, options = {}) => {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
   };
-  // 如果用户传入了 body，但忘记设置 Content-Type，可以自动处理
-//   if (mergedOptions.body && !mergedOptions.headers["Content-Type"]) {
-//     mergedOptions.headers["Content-Type"] = "application/json";
-//   }
+
+  console.log("Request URL:", url);
+ console.log("Request Options:", options); 
+
+ 
 
   try {
     const res = await fetch(url, {
@@ -48,10 +49,11 @@ const getUserId = () => {
 
 const getAllOrders = async () => {
   const userId = getUserId(); // 获取当前用户 ID
-  return request(BASE_URL, {
+  return request(`${BASE_URL}/orders`, {
     method: "GET",
   });
 };
+
 // const allorders =()=>{
 //    return request(BASE_URL, {
 //      method: "GET",
@@ -60,16 +62,41 @@ const getAllOrders = async () => {
 
  const showOrder = (orderId) => {
  
-  return request(`${BASE_URL}/${orderId}`, {
+  return request(`${BASE_URL}/orders/${orderId}`, {
     method: "GET",
   });
 };
 
 const createOrder = async (orderFormData) => {
-  return request(`${BASE_URL}`, {
+  return request(`${BASE_URL}/orders`, {
     method: "POST",
     body: JSON.stringify(orderFormData),
   });
 };
+
+// const updateOrdersWithDeletedProduct = async (productId) => {
+//   try {
+//     // 发送 DELETE 请求到 /products/:productId 路径
+//     const response = await request(
+//       `${BASE_URL}/orders/update`, // 使用正确的 URL 路径
+//       {
+//         method: "POST", // 使用 POST 请求来更新订单
+//         body: JSON.stringify({ productId }),
+//       }
+//     );
+//   if (!response.ok) {
+//     const errorDetails = await response.json();
+//     console.error("Server error details:", errorDetails);
+//     throw new Error("Failed to update orders with deleted product.");
+//   }
+
+//     return response;
+//   } catch (error) {
+//     console.error("Error updating orders with deleted product:", error.message);
+//     throw new Error("Failed to update orders with deleted product.");
+//   }
+// };
+
+
 
 export { getAllOrders, showOrder, createOrder };

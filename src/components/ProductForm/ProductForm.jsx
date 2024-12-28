@@ -2,8 +2,9 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
+import uploadFileToCloudinary from "../../services/cloudinaryService";
 
-const ProductForm = ({ products,setProducts }) => {
+const ProductForm = ({ products, setProducts }) => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const location = useLocation();
@@ -12,8 +13,10 @@ const ProductForm = ({ products,setProducts }) => {
     image_url: "",
     price: "",
     description: "",
+    image: null, // 添加 image 字段
   });
 
+  // const [image, setImage] = useState(null);
   const user = useContext(AuthedUserContext); // get user
   const [isAdmin, setIsAdmin] = useState(false);
   const isEditMode = !!productId;
@@ -42,8 +45,9 @@ const ProductForm = ({ products,setProducts }) => {
         setFormData({
           name: product.name,
           image_url: product.image_url,
-          price: product.price,
+          price: parseFloat(product.price),
           description: product.description,
+          
         });
       } else {
         // Fetch product if not passed
@@ -52,8 +56,9 @@ const ProductForm = ({ products,setProducts }) => {
           setFormData({
             name: productData.name,
             image_url: productData.image_url,
-            price: productData.price,
+            price: parseFloat(productData.price),
             description: productData.description,
+            
           });
         } catch (error) {
           console.error("Failed to fetch product data:", error.message);
@@ -65,23 +70,66 @@ const ProductForm = ({ products,setProducts }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // console.log('name',value)
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Handle image file change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({
+      ...prev,
+      image: file, // Save the selected file to formData.image
+    }));
+  };
+
+  useEffect(() => {
+    if (formData.image) {
+      const uploadImage = async () => {
+       try {
+          const imageUrl = await uploadFileToCloudinary(formData.image, formData.name); // 传递产品名称
+          console.log("Uploaded Image URL:", imageUrl);
+          setFormData((prev) => ({ ...prev, image_url: imageUrl }));
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      };
+
+      uploadImage();
+    }
+  }, [formData.image]); // Only trigger this when formData.image changes
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const price = parseFloat(formData.price);
+    if (!formData.name || !formData.image_url) {
+      console.error("Product name and image are required!");
+      return;
+    }
     try {
+      
+      // 准备提交的数据，确保 image_url 已正确设置
+     const { image, ...productData } = formData;
+     productData.price = price; 
+    console.log("Product Data to send:", productData);
+    console.log(typeof price);
+   
+      // 创建或更新商品
       if (isEditMode) {
-        await productService.updateProduct(productId, formData);
+        await productService.updateProduct(productId, productData);
         alert("Product updated successfully.");
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product._id === productId ? { ...product, ...formData } : product
+            product._id === productId
+              ? { ...product, ...productData }
+              : product
           )
         );
       } else {
-        await productService.createProduct(formData);
+        await productService.createProduct(productData);
         alert("New product created successfully.");
-        setProducts((prevProducts) => [...prevProducts, formData]);
+        setProducts((prevProducts) => [...prevProducts, productData]);
+       
       }
 
       navigate("/products"); // Redirect to product list
@@ -113,15 +161,16 @@ const ProductForm = ({ products,setProducts }) => {
           />
         </div>
         <div>
-          <label htmlFor="image_url">Image URL:</label>
+          <label htmlFor="image_url">Image:</label>
           <input
-            type="text"
+            type="file"
             id="image_url"
             name="image_url"
-            value={formData.image_url}
-            onChange={handleChange}
-            required
+            onChange={handleImageChange}
           />
+          {formData.image && (
+            <img src={URL.createObjectURL(formData.image)} alt="Uploaded" />
+          )}
         </div>
         <div>
           <label htmlFor="price">Price:</label>
@@ -153,13 +202,3 @@ const ProductForm = ({ products,setProducts }) => {
 };
 
 export default ProductForm;
- 
-
-
-
-
-
-
-
-     
-

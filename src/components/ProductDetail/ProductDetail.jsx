@@ -4,7 +4,7 @@ import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import * as orderService from "../../services/orderService";
-const ProductDetail = () => {
+const ProductDetail = ({products}) => {
   const navigate = useNavigate();
   const { productId } = useParams(); // get URL productId
   const { user, addToCart } = useContext(AuthedUserContext);
@@ -16,14 +16,17 @@ const ProductDetail = () => {
   const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  // const user_id = user._id;
+  const user_id = user._id;
   // 确保用户信息和 productId 已经加载再发起请求
+  console.log("Product ID from URL:", productId);;
   useEffect(() => {
     if (!productId || !user) return;
     const fetchProductDetails = async () => {
       try {
         // 获取商品信息
+      
         const productData = await productService.showProduct(productId);
+        console.log("productData", productData);
         setProduct(productData);
         // setReviews(productData.reviews || []);
 
@@ -43,20 +46,19 @@ const ProductDetail = () => {
         );
         setReviews(reviewsWithUsernames);
 
-
-
         // 设置管理员权限
         const role = productService.getUserRole();
         setIsAdmin(role === "admin");
         // 获取用户ID
         const userId = productService.getUserId();
         setUserId(userId);
-        // 检查用户是否购买过该商品
+        //检查用户是否购买过该商品
         const orders = await orderService.getAllOrders();
         console.log("Orders:", orders);
         const purchased = orders.some((order) =>
           order.orderItems_id.some((item) => item.product_id._id === productId)
         );
+        // console.log("Order Items:", orderItems_id);
         console.log("Has purchased:", purchased);
         setHasPurchased(purchased);
       } catch (error) {
@@ -70,7 +72,9 @@ const ProductDetail = () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-      await productService.deleteProduct(productId);
+
+      await productService.deleteProduct(productId), // 删除商品
+
       alert("Product deleted successfully.");
       navigate("/products");
     } catch (error) {

@@ -65,6 +65,7 @@ const App = () => {
       ];
     });
   };
+  // console.log("Cart :", cart);
   const removeFromCart =(productId)=>{
     console.log("Removing product with id:", productId);
     setCart((prevCart) => {
@@ -117,15 +118,18 @@ const App = () => {
         />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/products" element={<ProductList products={products} />} />
-        <Route path="/products/:productId" element={<ProductDetail />} />
+        <Route
+          path="/products/:productId"
+          element={<ProductDetail />}
+        />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
 
         <Route path="/cart" element={<ShoppingCart />} />
-        <Route path="/orders" element={<Orders/>} />
-        <Route path="/orderslist" element={<OrdersPage/>} />
-         <Route path="/dashboard" element={<Dashboard />} />
-        
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orderslist" element={<OrdersPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
         {/* admin Routes */}
         {isAdmin && (
           <>

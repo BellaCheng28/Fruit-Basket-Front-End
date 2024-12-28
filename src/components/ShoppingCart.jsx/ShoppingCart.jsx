@@ -11,7 +11,7 @@ const ShoppingCart = () => {
     navigate("/signin");
     return null;
   }
-// console.log("cart",cart)
+  console.log("cart",cart)
 
   const user_id = user._id;
 
@@ -30,8 +30,8 @@ const ShoppingCart = () => {
           purchasePrice: item.product.price,
         })),
       };
-      // console.log("Cart before checkout:", cart);
-      // console.log("Order data to send:", orderFormData);
+      console.log("Cart before checkout:", cart);
+      console.log("Order data to send:", orderFormData);
       const response = await orderService.createOrder(orderFormData);
       console.log("Order created successfully:", response);
 
@@ -65,15 +65,17 @@ const ShoppingCart = () => {
       <h2>Shopping Cart</h2>
       <ul>
         {cart.map((item) => (
-          <li key={item.product._id}>
+          <li key={item.product_id}>
             <h3>{item.product.name}</h3>
             <p>Price:${item.product.price}</p>
             <p>Quantity:{item.quantity}</p>
             <p>Total:${item.product.price * item.quantity}</p>
-            <button onClick={() => {
-              console.log('Removing product with id:', item.product._id); 
-              removeFromCart(item.product._id);
-            } }>
+            <button
+              onClick={() => {
+                console.log("Removing product with id:", item.product._id);
+                removeFromCart(item.product._id);
+              }}
+            >
               Remove
             </button>
           </li>
