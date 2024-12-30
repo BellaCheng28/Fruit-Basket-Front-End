@@ -41,7 +41,7 @@ const signin = async (user) => {
 
     if (json.data.token) {
       localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
-      // console.log("Token stored:", localStorage.getItem("token"));
+      
 
       const user = JSON.parse(atob(json.data.token.split(".")[1]));
 

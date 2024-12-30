@@ -26,8 +26,7 @@ const ProductForm = () => {
   useEffect(() => {
     const checkAdminRole = async () => {
       try {
-        const role = productService.getUserRole();
-        setIsAdmin(role === "admin");
+        
       } catch (error) {
         console.error("Error getting user role:", error.message);
       }
@@ -37,31 +36,30 @@ const ProductForm = () => {
 
   // Initialize form data for edit mode
   useEffect(() => {
-    if (!isEditMode) return;
-    const initializeFormData = async () => {
-      const product = location.state?.product;
-      // Get product from state if passed
-      if (product) {
-        setFormData({
-          ...product,
-          price: parseFloat(product.price),
-        });
-      } else {
-        // Fetch product if not passed
-        try {
-          const productData = await productService.showProduct(productId);
-          setFormData({
-            ...productData,
-            price: parseFloat(productData.price),
-            
+   const checkAdminRoleAndInitializeForm = async()=>{
+    try {
+      // Check if the user is admin
+      const role = productService.getUserRole();
+      setIsAdmin(role === "admin");
+      // Initialize form data if in edit mode
+   if (isEditMode){
+      const product =
+        location.state?.product ||
+        (await productService.showProduct(productId));
+      setFormData({
+            ...product,
+            price: parseFloat(product.price),
           });
-        } catch (error) {
-          console.error("Failed to fetch product data:", error.message);
         }
-      }
-    };
-    initializeFormData();
+  
+    } catch (error) {
+      console.error("Error:", error.message);
+      setIsAdmin(false);  // Default to non-admin 
+    }
+   };
+      checkAdminRoleAndInitializeForm();
   }, [isEditMode, productId, location.state]);
+  
 
   // Handle form data change
   const handleChange = async (e) => {
@@ -105,16 +103,16 @@ const ProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const price = parseFloat(formData.price);
     if (!formData.name || !formData.image_url) {
       console.error("Product name and image are required!");
       return;
     }
 
+    const productData = { ...formData, price: parseFloat(formData.price) };
     try {
       // 准备提交的数据，确保 image_url 已正确设置
-      const { image, ...productData } = formData;
-      productData.price = price;
+      // const { image, ...productData } = formData;
+      // productData.price = price;
       
 
       // 创建或更新商品
