@@ -10,10 +10,10 @@ const signup = async (formData) => {
     });
     const json = await res.json();
     console.log("Response from backend:", json);
-    if (json.data.token) {
-      localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
+    if (json.token) {
+      localStorage.setItem("token", json.token); // add this line to store the JWT token in localStorage
 
-      const user = JSON.parse(atob(json.data.token.split(".")[1]));
+      const user = JSON.parse(atob(json.token.split(".")[1]));
 
       return user;
     }
@@ -39,11 +39,11 @@ const signin = async (user) => {
     const json = await res.json();
     // console.log("Signin response:", json); 
 
-    if (json.data.token) {
-      localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
+    if (json.token) {
+      localStorage.setItem("token", json.token); // add this line to store the JWT token in localStorage
       
 
-      const user = JSON.parse(atob(json.data.token.split(".")[1]));
+      const user = JSON.parse(atob(json.token.split(".")[1]));
 
       return user;
     }
@@ -59,7 +59,6 @@ const signin = async (user) => {
 const getUser = () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    console.log("No token found!");
     return null;
   }   //新
   try {

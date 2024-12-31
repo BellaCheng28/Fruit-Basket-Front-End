@@ -1,11 +1,11 @@
-import { Link,useNavigate, } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import * as productService from "../../services/productService";
 import { AuthedUserContext } from "../../App";
 const ProductList = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
- const {products} = useContext(AuthedUserContext);
+  const { products } = useContext(AuthedUserContext);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -27,27 +27,43 @@ const ProductList = () => {
 
   return (
     <>
-      <main>
-        <h1>Product List</h1>
-        <div>
+      <main className="p-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 place-items-center">
           {products.map((product) => {
-            // console.log("Products:", products);
-            // console.log("product._id", product._id);
             return (
-              <Link key={product._id} to={`/products/${product._id}`}>
-                <div>
+              <Link
+                className="bg-white w-[160px] h-[200px] rounded-[10px]"
+                key={product._id}
+                to={`/products/${product._id}`}
+              >
+                <div className="rounded-lg p-4 flex flex-col items-center justify-between">
                   {product.image_url && (
-                    <img src={product.image_url} alt={product.name} />
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-3/4 object-cover rounded-md"
+                    />
                   )}
-                  <p>{product.name}</p>
-                  <p>{product.description}</p>
+                  <div className="text-center">
+                    <p className="font-semibold text-lg truncate">
+                      {product.name}
+                    </p>
+                    <p className="text-sm text-gray-700">$ {product.price} / LB</p>
+                  </div>
                 </div>
               </Link>
             );
           })}
         </div>
         {isAdmin && (
-          <button onClick={handleCreateProduct}>Create Product</button>
+          <div className="flex justify-center mt-5">
+          <button
+            onClick={handleCreateProduct}
+            className="bg-lime-600 text-white px-6 py-2 rounded-lg hover:bg-lime-500"
+          >
+            Create Product
+          </button>
+        </div>
         )}
       </main>
     </>

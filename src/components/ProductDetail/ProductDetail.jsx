@@ -115,41 +115,100 @@ const ProductDetail = () => {
   if (!product) return <div>Product not found</div>;
   return (
     <>
-      <div>
-        <h1>{product.name}</h1>
-        <p>{product.description}</p>
-        <img src={product.image_url} alt={product.name} />
-        <p>Price: ${product.price}</p>
-        <div>
-          <button onClick={() => setQuantity((prev) => Math.max(0, prev - 1))}>
+      <div className="flex items-center flex-col justify-center p-6 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold text-gray-800">{product.name}</h1>
+        
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="mt-4 w-[300px] h-[300px] rounded-md"
+        />
+        <p className="text-gray-600 mt-2">{product.description}</p>
+        <p className="text-xl font-bold text-gray-900 mt-4">
+          Price: ${product.price} / LB
+        </p>
+
+        {/* Quantity Control */}
+        <div className="flex items-center gap-3 mt-4">
+          <button
+            onClick={() => setQuantity((prev) => Math.max(0, prev - 1))}
+            className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition"
+          >
             -
           </button>
-          <span> {quantity} </span>
-          <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
-          <button onClick={handleAddToCart}>Add to cart</button>
+          <span className="text-xl">{quantity}</span>
+          <button
+            onClick={() => setQuantity((prev) => prev + 1)}
+            className="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition"
+          >
+            +
+          </button>
         </div>
+
+        {/* Add to Cart Button */}
+        <div className="mt-4">
+          <button
+            onClick={handleAddToCart}
+            className="w-full p-4 bg-lime-600 text-white py-2 rounded-md hover:bg-lime-500 transition"
+          >
+            Add to cart
+          </button>
+        </div>
+
+        {/* Admin Buttons */}
         {isAdmin && (
-          <div>
-            <button onClick={handleEdit}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white py-1 px-4 rounded-md hover:bg-blue-400 transition"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-400 transition"
+            >
+              Delete
+            </button>
           </div>
         )}
       </div>
-      <div>
-        <h2>Reviews</h2>
+
+      <div className="flex items-center flex-col justify-center p-6 bg-white rounded-lg shadow-md mt-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Reviews</h2>
+
+        {/* Write a Review Button */}
         {hasPurchased && (
-          <button onClick={() => setReviewFormVisible(true)}>
+          <button
+            onClick={() => setReviewFormVisible(true)}
+            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-400 transition"
+          >
             Write a Review
           </button>
         )}
+
+        {/* Review Form */}
         {isReviewFormVisible && (
-          <ReviewForm handleAddReview={handleAddReview} />
+          <div className="mt-4">
+            <ReviewForm handleAddReview={handleAddReview} />
+          </div>
         )}
-        {reviews.length === 0 && <p>There are no Reviews.</p>}
+
+        {/* No Reviews Message */}
+        {reviews.length === 0 && (
+          <p className="text-gray-500 mt-4">There are no Reviews.</p>
+        )}
+
+        {/* Review List */}
         {reviews.map((review) => (
-          <article key={review._id}>
-            <h3>{review.username}</h3>
-            <p>{review.text}</p>
+          <article
+            key={review._id}
+            className="border-t pt-4 mt-4 first:border-t-0"
+          >
+            <h3 className="text-xl font-semibold text-gray-800">
+              {review.username}
+            </h3>
+            <p className="text-gray-600 mt-2">{review.text}</p>
           </article>
         ))}
       </div>
