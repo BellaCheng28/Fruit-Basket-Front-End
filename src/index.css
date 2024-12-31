@@ -1,4 +1,11 @@
-/* src/index.css 或 src/main.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body {
+    @apply bg-gray-100;
+    @apply m-0;
+    @apply p-0; 
+    @apply h-screen; 
+  }

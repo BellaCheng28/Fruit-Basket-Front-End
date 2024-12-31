@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import Landing from "./components/Landing/Landing";
-import Dashboard from "./components/Dashboard/Dashboard";
+import Home from "./components/Home/Home";
 import SignupForm from "./components/SignupForm/SignupForm";
 import SigninForm from "./components/SigninForm/SigninForm";
 import * as authService from "../src/services/authService"; //
@@ -37,7 +37,6 @@ const fetchProducts = async () => {
     const products = await productService.allProducts();
     setProducts(products);
   } catch (error) {
-    console.error("Failed to fetch products:", error);
     setProducts([]);
   }
 };
@@ -134,9 +133,9 @@ const handleDeleteProduct = (productId) => {
         {/* public Routes: */}
         <Route
           path="/"
-          element={user ? <Navigate to="/dashboard" /> : <Landing />}
+          element={user ? <Navigate to="/home" /> : <Landing />}
         />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
@@ -144,7 +143,7 @@ const handleDeleteProduct = (productId) => {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orderslist" element={<OrdersPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/home" element={<Home />} />
 
         {/* admin Routes */}
         {isAdmin && (
