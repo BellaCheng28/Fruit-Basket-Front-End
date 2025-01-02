@@ -131,6 +131,7 @@ const handleDeleteProduct = (productId) => {
       <NavBar handleSignout={handleSignout} />
       <Routes>
         {/* public Routes: */}
+       
         <Route
           path="/"
           element={user ? <Navigate to="/home" /> : <Landing />}

@@ -22,17 +22,6 @@ const ProductForm = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const isEditMode = !!productId;
 
-  //check user role
-  useEffect(() => {
-    const checkAdminRole = async () => {
-      try {
-        
-      } catch (error) {
-        console.error("Error getting user role:", error.message);
-      }
-    };
-    checkAdminRole();
-  }, []);
 
   // Initialize form data for edit mode
   useEffect(() => {
