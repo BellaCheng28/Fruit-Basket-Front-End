@@ -31,12 +31,13 @@ const ProductList = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 place-items-center">
           {products.map((product) => {
             return (
+              
               <Link
-                className="bg-white w-[160px] h-[200px] rounded-[10px]"
+                className="bg-[#fafaf6] w-[160px] h-[250px] rounded-[10px]"
                 key={product._id}
                 to={`/products/${product._id}`}
               >
-                <div className="rounded-lg p-4 flex flex-col items-center justify-between">
+                <div className="rounded-lg  flex flex-col items-center justify-between">
                   {product.image_url && (
                     <img
                       src={product.image_url}
@@ -44,11 +45,13 @@ const ProductList = () => {
                       className="w-full h-3/4 object-cover rounded-md"
                     />
                   )}
-                  <div className="text-center">
+                  <div className="text-center p-3">
                     <p className="font-semibold text-lg truncate">
                       {product.name}
                     </p>
-                    <p className="text-sm text-gray-700">$ {product.price} / LB</p>
+                    <p className="text-sm text-lime-600">
+                      $ {product.price} / LB
+                    </p>
                   </div>
                 </div>
               </Link>

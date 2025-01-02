@@ -14,13 +14,12 @@ const checkAdminRole = () => {
   }
 };
 
-
 const request = async (url, options = {}) => {
   const { method = "GET", body, headers = {} } = options;
 
   // 获取 token
   const token = getAuthToken();
-//  console.log("Authorization Token:", token);
+  //  console.log("Authorization Token:", token);
   // 设置请求头
   const requestOptions = {
     method,
@@ -35,8 +34,8 @@ const request = async (url, options = {}) => {
   if ((method === "POST" || method === "PUT") && body) {
     requestOptions.body = JSON.stringify(body); // 转化为 JSON 字符串
   }
-//  console.log("Request URL:", url);
-//  console.log("Request Options:", requestOptions); 
+  //  console.log("Request URL:", url);
+  //  console.log("Request Options:", requestOptions);
   try {
     const response = await fetch(url, requestOptions);
 
@@ -54,10 +53,8 @@ const request = async (url, options = {}) => {
   }
 };
 
-  
-
 const getUserId = () => {
-   const token = getAuthToken();
+  const token = getAuthToken();
   try {
     const decoded = jwtDecode(token);
     return decoded.id; // 返回用户 ID
@@ -67,8 +64,7 @@ const getUserId = () => {
   }
 };
 
-
- const getUserRole = () => {
+const getUserRole = () => {
   const token = getAuthToken();
   try {
     const decoded = jwtDecode(token);
@@ -91,7 +87,6 @@ const showProduct = async (productId) => {
   const response = await request(`${BASE_URL}/products/${productId}`);
   return response;
 };
-
 
 const createProduct = async (productData) => {
   checkAdminRole();
@@ -116,9 +111,6 @@ const deleteProduct = (productId) => {
   });
 };
 
-
-
-
 // const allReviews = () => request(`${BASE_URL}/review`);
 
 const showReview = (productId) => {
@@ -130,11 +122,12 @@ const showReview = (productId) => {
   });
 };
 
-const createReview = async (productId, reviewFormData) => {
+const createReview = async (reviewFormData) => {
+ 
   //  const role = getUserRole();
   return request(`${BASE_URL}/review`, {
     method: "POST",
-   reviewFormData,
+    body: reviewFormData,
   });
 };
 
@@ -165,5 +158,5 @@ export {
   updateProduct,
   deleteProduct,
   showReview,
-  createReview
+  createReview,
 };

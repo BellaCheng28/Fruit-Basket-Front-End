@@ -14,7 +14,7 @@ import ReviewForm from "./components/ReviewForm/ReviewForm";
 import Orders from "./components/Orders/Orders";
 import OrdersPage from "./components/OrdersPage/OrdersPage";
 import ShoppingCart from "./components/ShoppingCart.jsx/ShoppingCart";
-import * as orderService from "./services/orderService";
+
 
 export const AuthedUserContext = createContext(null); // set the initial value of the context to null
 export const cartContext = createContext();

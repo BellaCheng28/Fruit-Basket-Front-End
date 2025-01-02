@@ -11,7 +11,6 @@ const SignupForm = (props) => {
     username: "",
     password: "",
     passwordConf: "",
-
   });
   const { username, password, passwordConf } = formData;
 
@@ -25,11 +24,11 @@ const SignupForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-     if (password !== passwordConf) {
-       setMessage("Passwords do not match.");
-       return;
-     }
+
+    if (password !== passwordConf) {
+      setMessage("Passwords do not match.");
+      return;
+    }
     try {
       const newUserResponse = await authService.signup(formData);
       props.setUser(newUserResponse.user);
@@ -44,47 +43,85 @@ const SignupForm = (props) => {
   };
 
   return (
-    <main>
-      <h1>Sign Up</h1>
-      <p>{message}</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="name"
-            value={username}
-            name="username"
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            name="password"
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="confirm">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirm"
-            value={passwordConf}
-            name="passwordConf"
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <button disabled={isFormInvalid()}>Sign Up</button>
-          <Link to="/">
-            <button>Cancel</button>
-          </Link>
-        </div>
-      </form>
+    <main className="flex min-h-screen justify-center items-center bg-gray-100 py-12  ">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Sign Up
+        </h1>
+        <p className="text-red-500 text-center mb-4">{message}</p>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Username:
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={username}
+              name="username"
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              name="password"
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="confirm"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password:
+            </label>
+            <input
+              type="password"
+              id="confirm"
+              value={passwordConf}
+              name="passwordConf"
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <button
+              type="submit"
+              disabled={isFormInvalid()}
+              className="w-full py-2 px-4 bg-green-700 text-white font-semibold rounded-lg shadow-md hover:bg-green-900 disabled:bg-gray-400"
+            >
+              Sign Up
+            </button>
+          </div>
+          <div className="mt-4 text-center">
+            <Link to="/">
+              <button
+                type="button"
+                className="w-full py-2 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </Link>
+          </div>
+        </form>
+      </div>
     </main>
   );
 };

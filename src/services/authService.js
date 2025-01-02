@@ -39,11 +39,11 @@ const signin = async (user) => {
     const json = await res.json();
     // console.log("Signin response:", json); 
 
-    if (json.token) {
-      localStorage.setItem("token", json.token); // add this line to store the JWT token in localStorage
+    if (json.data.token) {
+      localStorage.setItem("token", json.data.token); // add this line to store the JWT token in localStorage
       
 
-      const user = JSON.parse(atob(json.token.split(".")[1]));
+      const user = JSON.parse(atob(json.data.token.split(".")[1]));
 
       return user;
     }

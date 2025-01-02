@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext,useState } from "react";
 import { AuthedUserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import * as orderService from "../../services/orderService";
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const { user, cart, removeFromCart, clearCart } =
+
+  const { user, cart,removeFromCart, clearCart } =
     useContext(AuthedUserContext);
   if (!user) {
     console.error("User not logged in.");
@@ -80,34 +81,39 @@ const ShoppingCart = () => {
     );
   }
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md space-y-6">
-      {/* 商品列表 */}
-      <ul className="space-y-4">
-        {cart.map((item) => (
-          <li key={item.product_id} className="border-b pb-4 last:border-b-0">
-            <h3 className="text-xl font-semibold text-gray-800">
-              {item.product.name}
-            </h3>
-            <p className="text-gray-600">Price: ${item.product.price}</p>
-            <p className="text-gray-600">Quantity: {item.quantity}</p>
-            <p className="font-bold text-gray-900">
-              Total: ${item.product.price * item.quantity}
-            </p>
-            <button
-              onClick={() => {
-                console.log("Removing product with id:", item.product._id);
-                removeFromCart(item.product._id);
-              }}
-              className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 transition"
-            >
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="p-6 bg-white rounded-lg shadow-md space-y-6 mt-4  ">
+      {/* Product orderList */}
+      <div className="bg-[#fafaf6] rounded-lg">
+        <ul className="space-y-4 ">
+          {cart.map((item) => (
+            <li key={item.product_id} className="border-b pb-4 last:border-b-0">
+              <h3 className="text-xl font-semibold text-gray-800">
+                {item.product.name}
+              </h3>
+              <p className="text-green-600">Price: ${item.product.price}</p>
 
-      {/* 总计 */}
-      <div className="flex justify-between items-center">
+              <p className="text-gray-600 bg-white w-20 rounded-md">
+                Quantity: {item.quantity}
+              </p>
+              <p className="font-bold text-gray-900">
+                Total: ${item.product.price * item.quantity}
+              </p>
+              <button
+                onClick={() => {
+                  console.log("Removing product with id:", item.product._id);
+                  removeFromCart(item.product._id);
+                }}
+                className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 transition"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Total */}
+      <div className="flex justify-between items-center ">
         <h3 className="text-lg font-semibold text-gray-900">
           Total: ${calculateTotal()}
         </h3>

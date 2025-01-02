@@ -140,28 +140,51 @@ const ProductForm = () => {
   if (isAdmin === null) {
     return <div>Loading...</div>;
   }
+
+  const handleCancel = () => {
+    navigate(`/products/${productId}`);
+  }; 
+
   return (
-    <div>
-      <h2>{isEditMode ? "Edit Product" : "Create New Product"}</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="flex min-h-screen justify-center items-center  bg-white py-12  flex-col">
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        {isEditMode ? "Edit Product" : "Create New Product"}
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md p-8 bg-[#fafaf6] rounded-lg shadow-lg space-y-6"
+      >
         <div>
-          <label htmlFor="name">Product Name:</label>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Product Name:
+          </label>
           <input
             type="text"
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
         </div>
         <div>
-          <label htmlFor="image_url">Image:</label>
+          <label
+            htmlFor="image_url"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Image:
+          </label>
           <input
             type="file"
             id="image_url"
             name="image_url"
             onChange={handleImageChange}
+            className="mt-1 block w-full  focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
           />
           {formData.image && (
             <img src={URL.createObjectURL(formData.image)} alt="Uploaded" />
@@ -175,6 +198,7 @@ const ProductForm = () => {
             name="price"
             value={formData.price}
             onChange={handleChange}
+            className="mt-1 block w-full  focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
         </div>
@@ -185,11 +209,22 @@ const ProductForm = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
+            className="mt-1 block w-full  focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           ></textarea>
         </div>
-        <button type="submit">
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-green-700 text-white font-semibold rounded-lg shadow-md hover:bg-green-900 disabled:bg-gray-400"
+        >
           {isEditMode ? "Save Changes" : "Create Product"}
+        </button>
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="w-full py-2 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-100"
+        >
+          Cancel
         </button>
       </form>
     </div>
