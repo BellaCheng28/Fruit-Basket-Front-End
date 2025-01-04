@@ -13,7 +13,7 @@ The **Fruit Basket** project is an e-commerce web application that allows users 
   - View product reviews to make informed purchase decisions.
   <img src="./public/image/products.png" alt="Products Page" width="600">
   <img src="./public/image/Review.png" alt="Reviews Page" width="600">
-### Customer Features
+### Customers Features
 * Customers have the following functionalities:
   - Add products to their shopping cart and proceed to purchase.
   - Leave reviews for purchased products.
@@ -39,7 +39,7 @@ The **Fruit Basket** project is an e-commerce web application that allows users 
  * Database: MongoDB
 ### Deployment
 * The application is deployed on
-  * [Netlify]()
+  * [Netlify](https://fruit-basket-store.netlify.app)
   * [Heroku](https://fruit-basket-0436f702ecc6.herokuapp.com)
 
 ##  Quick Start
