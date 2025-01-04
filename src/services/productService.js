@@ -2,17 +2,10 @@ const BASE_URL = `${import.meta.env.VITE_EXPRESS_BACKEND_URL}`;
 import { jwtDecode } from "jwt-decode";
 
 const getAuthToken = () => {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No authentication token found. Please log in.");
+  const token = localStorage.getItem("token")|| null;
   return token;
 };
 
-const checkAdminRole = () => {
-  const role = getUserRole();
-  if (role !== "admin") {
-    throw new Error("Permission denied. Only admins can perform this action.");
-  }
-};
 
 const request = async (url, options = {}) => {
   const { method = "GET", body, headers = {} } = options;
@@ -64,22 +57,16 @@ const getUserId = () => {
   }
 };
 
-const getUserRole = () => {
-  const token = getAuthToken();
+// const allProducts = () => request();
+
+const allProducts = async () => {
   try {
-    const decoded = jwtDecode(token);
-    if (!decoded || !decoded.role) {
-      throw new Error("Invalid token format or role missing.");
-    }
-    return decoded.role;
+    const res = await fetch(`${BASE_URL}/products`);
+    return res.json();
   } catch (error) {
-    console.error("Failed to decode token:", error.message);
-    throw new Error("Invalid token. Please log in again.");
+    console.log(error);
   }
 };
-
-const allProducts = () => request(`${BASE_URL}/products`);
-
 const showProduct = async (productId) => {
   if (!productId) {
     throw new Error("Product ID is required");
@@ -89,7 +76,6 @@ const showProduct = async (productId) => {
 };
 
 const createProduct = async (productData) => {
-  checkAdminRole();
   return request(`${BASE_URL}/products`, {
     method: "POST",
     body: productData,
@@ -97,7 +83,6 @@ const createProduct = async (productData) => {
 };
 
 const updateProduct = (productId, productData) => {
-  checkAdminRole();
   return request(`${BASE_URL}/products/${productId}`, {
     method: "PUT",
     body: productData,
@@ -105,13 +90,11 @@ const updateProduct = (productId, productData) => {
 };
 
 const deleteProduct = (productId) => {
-  checkAdminRole();
   return request(`${BASE_URL}/products/${productId}`, {
     method: "DELETE",
   });
 };
 
-// const allReviews = () => request(`${BASE_URL}/review`);
 
 const showReview = (productId) => {
   if (!productId) {
@@ -123,35 +106,15 @@ const showReview = (productId) => {
 };
 
 const createReview = async (reviewFormData) => {
- 
-  //  const role = getUserRole();
   return request(`${BASE_URL}/review`, {
     method: "POST",
     body: reviewFormData,
   });
 };
 
-// const updateReview = async (productId, reviewId) => {
-//   const role = getUserRole();
-//   return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
-//     method: "PUT",
-//     body: JSON.stringify(reviewFormData),
-//   });
-// };
-
-// const deleteReview = async (productId, reviewId) => {
-//   const role = getUserRole();
-//   return request(`${BASE_URL}/${productId}/reviews/${reviewId}`, {
-//     method: "DELETE",
-//     body: JSON.stringify(reviewFormData),
-//   });
-// };
-//  updateReview,
-//   deleteReview,
 
 export {
   getUserId,
-  getUserRole,
   allProducts,
   showProduct,
   createProduct,

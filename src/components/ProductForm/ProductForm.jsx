@@ -16,10 +16,8 @@ const ProductForm = () => {
     image: null, // 添加 image 字段
   });
 
-  const { user, handleEditProduct, handleCreateProduct } =
-    useContext(AuthedUserContext);
-  
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user } =useContext(AuthedUserContext);
+
   const isEditMode = !!productId;
 
 
@@ -27,9 +25,6 @@ const ProductForm = () => {
   useEffect(() => {
    const checkAdminRoleAndInitializeForm = async()=>{
     try {
-      // Check if the user is admin
-      const role = productService.getUserRole();
-      setIsAdmin(role === "admin");
       // Initialize form data if in edit mode
    if (isEditMode){
       const product =
@@ -43,11 +38,11 @@ const ProductForm = () => {
   
     } catch (error) {
       console.error("Error:", error.message);
-      setIsAdmin(false);  // Default to non-admin 
+     
     }
    };
       checkAdminRoleAndInitializeForm();
-  }, [isEditMode, productId, location.state]);
+  }, [isEditMode, location.state]);
   
 
   // Handle form data change
@@ -99,37 +94,26 @@ const ProductForm = () => {
 
     const productData = { ...formData, price: parseFloat(formData.price) };
     try {
-      // 准备提交的数据，确保 image_url 已正确设置
-      // const { image, ...productData } = formData;
-      // productData.price = price;
-      
-
       // 创建或更新商品
       if (isEditMode) {
         const EditProduct= await productService.updateProduct(productId, productData);
         alert("Product updated successfully.");
-        handleEditProduct(EditProduct);
+
       } else {
         const createdProduct = await productService.createProduct(productData);
         alert("New product created successfully.");
-        handleCreateProduct(createdProduct);
-        
+       
       }
-
       navigate("/products"); // Redirect to product list
+      return;
     } catch (error) {
       console.error("Failed to save product:", error.message);
       alert("Failed to save product.");
     }
   };
 
-  if (!isAdmin) {
-    return <div>You are not authorized to create a product.</div>;
-  }
-  if (isAdmin === null) {
-    return <div>Loading...</div>;
-  }
 
+ 
   const handleCancel = () => {
     navigate(`/products/${productId}`);
   }; 

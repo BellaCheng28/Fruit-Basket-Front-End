@@ -1,24 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect, useState, useContext } from "react";
-import * as productService from "../../services/productService";
+import { useEffect, useState, useContext } from "react";
 import { AuthedUserContext } from "../../App";
+import * as productService from "../../services/productService";
+
 const ProductList = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { products } = useContext(AuthedUserContext);
+  const user = useContext(AuthedUserContext);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const role = await productService.getUserRole();
-        setIsAdmin(role === "admin");
-      } catch (error) {
-        console.error("Failed to check role:", error);
-        setIsAdmin(false); // 默认设置为非管理员
-      }
-    };
-    checkAdmin();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const products = await productService.allProducts();
+      setProducts(products);
+    } catch (error) {
+      setProducts([]);
+    }
+  };
 
   const handleCreateProduct = () => {
     navigate("/products/new");
@@ -56,7 +57,7 @@ const ProductList = () => {
             );
           })}
         </div>
-        {isAdmin && (
+        {user?.user?.role === "admin" && (
           <div className="flex justify-center mt-5">
             <button
               onClick={handleCreateProduct}
