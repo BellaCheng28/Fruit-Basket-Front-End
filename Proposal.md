@@ -3,8 +3,6 @@
 ## Project Description 
 Fruit Basket is an online fruit shop offering a wide selection of fresh, high-quality fruits delivered straight to your doorstep. From seasonal favorites to exotic varieties, we provide a convenient shopping experience for all fruit lovers. Whether you're stocking up for the week or gifting a loved one, our basket of fresh fruits is just a click away!
 
-  
-
 ## User Stories
 ### MVP Goals
 *  As a guest, I want to view a list of fruits with images, names, and prices, so that I can decide if I want to make a purchase.
@@ -18,8 +16,6 @@ Fruit Basket is an online fruit shop offering a wide selection of fresh, high-qu
 *  As a guest or customer, I want to view the reviews of a product, so that I can make an informed purchase decision.
 *  As a customer, I want to securely log out of my account, so that my session ends.
 *  As an admin, I want to add, edit, or delete products, so that I can keep the product list up to date.
-
-
 
   
 ### Stretch Goals

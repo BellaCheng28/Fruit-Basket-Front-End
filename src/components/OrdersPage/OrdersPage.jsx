@@ -4,34 +4,21 @@ import { useNavigate } from "react-router-dom";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      console.log("Fetching orders...");
-      try {
-        const ordersData = await orderService.getAllOrders();
-        console.log("ordersData:", ordersData);
-        if (ordersData.length === 0) {
-          setOrders([]);
-        } else {
-          setOrders(ordersData);
-        }
-      } catch (error) {
-        setError("Failed to load orders");
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrders();
-  }, [navigate]);
+  }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  const fetchOrders = async () => {
+   const ordersData = await orderService.getAllOrders();
+      if (ordersData.length === 0) {
+        setOrders([]);
+      } else {
+        setOrders(ordersData);
+      }
+  };
+
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">

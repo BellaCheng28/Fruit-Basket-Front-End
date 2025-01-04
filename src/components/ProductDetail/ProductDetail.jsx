@@ -7,84 +7,64 @@ import * as orderService from "../../services/orderService";
 const ProductDetail = () => {
   const navigate = useNavigate();
   const { productId } = useParams(); // get URL productId
-  const { user, addToCart, handleDeleteProduct } =
-    useContext(AuthedUserContext);
-  const [product, setProduct] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, addToCart } = useContext(AuthedUserContext);
+  const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(0);
   const [hasPurchased, setHasPurchased] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [isReviewFormVisible, setReviewFormVisible] = useState(false);
   const [salesCount, setSalesCount] = useState(0);
   const reviewsRef = useRef(null);
-  const [userId, setUserId] = useState(null);
 
-  const user_id = user._id;
-  // 确保用户信息和 productId 已经加载再发起请求
-  console.log("Product ID from URL:", productId);
   useEffect(() => {
-    if (!productId || !user) return;
-    const fetchProductDetails = async () => {
-      try {
-        // 获取商品信息
-
-        const productData = await productService.showProduct(productId);
-        console.log("productData", productData);
-        setProduct(productData);
-        // setReviews(productData.reviews || []);
-
-        const reviewsData = await productService.showReview(productId);
-        const reviewsWithUsernames = await Promise.all(
-          reviewsData.map(async (review) => {
-            console.log("reviewsData", reviewsData);
-            const username =
-              review.user_id && review.user_id.username
-                ? review.user_id.username
-                : "Unknown";
-            return {
-              ...review,
-              username,
-            };
-          })
-        );
-        setReviews(reviewsWithUsernames);
-
-        // 设置管理员权限
-        const role = productService.getUserRole();
-        setIsAdmin(role === "admin");
-        // 获取用户ID
-        const userId = productService.getUserId();
-        setUserId(userId);
-        //检查用户是否购买过该商品
-        const orders = await orderService.getAllOrders();
-        console.log("Orders:", orders);
-        const purchased = orders.some((order) =>
-          order.orderItems_id.some((item) => item.product_id._id === productId)
-        );
-        // console.log("Order Items:", orderItems_id);
-        // console.log("Has purchased:", purchased);
-        setHasPurchased(purchased);
-
-        const totalSales = orders
-          .flatMap((order) => order.orderItems_id)
-          .filter((item) => item.product_id._id === productId)
-          .reduce((total, item) => total + item.quantity, 0);
-        setSalesCount(totalSales);
-      } catch (error) {
-        console.error("Error fetching product details:", error);
-      }
-    };
     fetchProductDetails();
-  }, [productId, user]); // 仅当 productId 或 user 发生变化时才触发
+  }, []);
+  const fetchProductDetails = async () => {
+    try {
+      const productData = await productService.showProduct(productId);
+      setProduct(productData);
+
+      const reviewsData = await productService.showReview(productId);
+      const reviewsWithUsernames = await Promise.all(
+        reviewsData.map(async (review) => {
+          const username =
+            review.user_id && review.user_id.username
+              ? review.user_id.username
+              : "Unknown";
+          return {
+            ...review,
+            username,
+          };
+        })
+      );
+      setReviews(reviewsWithUsernames);
+
+      //检查用户是否购买过该商品
+      const orders = await orderService.getAllOrders();
+      const purchased = orders.some((order) =>
+        order.orderItems_id.some((item) => item.product_id._id === productId)
+      );
+
+      setHasPurchased(purchased);
+
+      const totalSales = orders
+        .flatMap((order) => order.orderItems_id)
+        .filter((item) => item.product_id._id === productId)
+        .reduce((total, item) => total + item.quantity, 0);
+      setSalesCount(totalSales);
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
       await productService.deleteProduct(productId), // 删除商品
-        alert("Product deleted successfully.");
-      handleDeleteProduct(productId);
+      alert("Product deleted successfully.");
       navigate("/products");
+      return;
     } catch (error) {
       alert("Failed to delete product.");
       console.error("Error deleting product:", error.message);
@@ -94,6 +74,10 @@ const ProductDetail = () => {
     navigate(`/products/${productId}/edit`, { state: { product } });
   };
   const handleAddToCart = () => {
+    if (!user) {
+      navigate("/signin");
+      return;
+    }
     if (quantity === 0) {
       alert("Please select a quantity greater than 0.");
       return;
@@ -113,15 +97,12 @@ const ProductDetail = () => {
         username: user.username,
         product_id: productId,
       };
-      console.log("Submitting review data:", reviewData);
-
       const newReview = await productService.createReview(reviewData);
       setReviews((PrevReviews) => [...PrevReviews, newReview]);
       setReviewFormVisible(false);
     } catch (error) {}
   };
 
-  if (!product) return <div>Product not found</div>;
   return (
     <>
       <div className="flex flex-col justify-start items-center min-h-screen w-full bg-gray-100">
@@ -175,10 +156,10 @@ const ProductDetail = () => {
 
               {/* product description */}
               <div className="flex-1">
-                <p className="text-gray-400 font-serif w-full mt-2 leading-relaxed ">
+                <div className="text-gray-400 font-serif w-full mt-2 leading-relaxed ">
                   <p className="text-gray-700 ">Description</p>
                   {product.description}
-                </p>
+                </div>
               </div>
             </div>
             {/* all buttons */}
@@ -195,7 +176,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Admin Buttons */}
-              {isAdmin && (
+              {user?.role === "admin" && (
                 <div className="flex gap-3 mt-4 justify-center w-full">
                   <button
                     onClick={handleEdit}

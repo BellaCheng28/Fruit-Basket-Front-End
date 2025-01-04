@@ -1,25 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect, useState, useContext } from "react";
-import * as productService from "../../services/productService";
+import { useEffect, useState, useContext } from "react";
 import { AuthedUserContext } from "../../App";
+import * as productService from "../../services/productService";
+
 const ProductList = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { products } = useContext(AuthedUserContext);
+  const user = useContext(AuthedUserContext);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const role = await productService.getUserRole();
-        setIsAdmin(role === "admin");
-      } catch (error) {
-        console.error("Failed to check role:", error);
-        setIsAdmin(false); // 默认设置为非管理员
-      }
-    };
-
-    checkAdmin();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const products = await productService.allProducts();
+      setProducts(products);
+    } catch (error) {
+      setProducts([]);
+    }
+  };
 
   const handleCreateProduct = () => {
     navigate("/products/new");
@@ -31,7 +31,6 @@ const ProductList = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 place-items-center">
           {products.map((product) => {
             return (
-              
               <Link
                 className="bg-[#fafaf6] w-[160px] h-[250px] rounded-[10px]"
                 key={product._id}
@@ -58,15 +57,15 @@ const ProductList = () => {
             );
           })}
         </div>
-        {isAdmin && (
+        {user?.user?.role === "admin" && (
           <div className="flex justify-center mt-5">
-          <button
-            onClick={handleCreateProduct}
-            className="bg-lime-600 text-white px-6 py-2 rounded-lg hover:bg-lime-500"
-          >
-            Create Product
-          </button>
-        </div>
+            <button
+              onClick={handleCreateProduct}
+              className="bg-lime-600 text-white px-6 py-2 rounded-lg hover:bg-lime-500"
+            >
+              Create Product
+            </button>
+          </div>
         )}
       </main>
     </>
