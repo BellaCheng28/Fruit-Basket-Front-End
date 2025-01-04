@@ -1,7 +1,7 @@
 # Fruit Basket Project
   <img src="./public/image/Home.png" alt="HomePage" width="600">
 
-## overview
+## Overview
 
 
 The **Fruit Basket** project is an e-commerce web application that allows users to browse, review, and purchase fruits online. The application is built using **React** for the front-end, **Node.js** for the back-end, and **MongoDB** for the database.
