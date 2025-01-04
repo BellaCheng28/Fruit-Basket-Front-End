@@ -110,5 +110,5 @@ Make sure you have the following installed on your machine:
 ## Attributions:
 This project used the following resources:
 * [Cloudinary](https://cloudinary.com/home) for media storage and management images
-* [figma](https://www.figma.com/) for design our page
+* [Figma](https://www.figma.com/) for design our page
 * Special thanks to OpenAI's [ChatGPT](https://chatgpt.com/) for providing valuable suggestions and solutions during the development process.
