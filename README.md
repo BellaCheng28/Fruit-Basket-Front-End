@@ -109,6 +109,9 @@ Make sure you have the following installed on your machine:
 
 ## Attributions:
 This project used the following resources:
-* [Cloudinary](https://cloudinary.com/home) for media storage and management images
-* [Figma](https://www.figma.com/) for design our page
-* Special thanks to OpenAI's [ChatGPT](https://chatgpt.com/) for providing valuable suggestions and solutions during the development process.
+* [Cloudinary](https://cloudinary.com/home) Cloudinary was used for managing and storing media files, such as product images. By leveraging Cloudinary's API, we efficiently uploaded, optimized, and served high-quality images, enhancing page load times and user experience. In the project, we utilized Cloudinary's upload presets to automate image uploads and management.
+* [Figma](https://www.figma.com/) Figma was instrumental in designing the user interface (UI) and user experience (UX) of the application. Before development, we created high-fidelity wireframes and prototypes for key pages, including the home page, shopping cart, and product details page. These designs served as a clear reference throughout the development process.
+* [Tailwind CSS](https://tailwindcss.com/)
+Tailwind CSS was used to quickly build the application's styling. With its utility-first approach, Tailwind enabled us to efficiently develop responsive and consistent designs across the application
+* [OpenAI's ChatGPT](https://chatgpt.com)
+ChatGPT provided invaluable technical support and suggestions during the project. From debugging code and optimizing logic to improving documentation, ChatGPT saved us significant time and helped us deliver a more robust application.
