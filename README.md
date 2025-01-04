@@ -4,7 +4,7 @@
 ## Overview
 
 
-The **Fruit Basket** project is an e-commerce web application that allows users to browse, review, and purchase fruits online. The application is built using **React** for the front-end, **Node.js** for the back-end, and **MongoDB** for the database.
+The **Fruit Basket** project is an e-commerce web application that allows users to browse, review, and purchase fruits online. The application is built using **React** for the front-end,**Tailwind Css** for the CSS, **Node.js** for the back-end, and **MongoDB** for the database.
 
 ## Features
 ### General Features
@@ -33,7 +33,7 @@ The **Fruit Basket** project is an e-commerce web application that allows users 
  * Framework: React
  * Authentication: JSON Web Tokens (JWT)
  * State Management: React Context/State Hooks
- * Css:tailwind css
+ * CSS:Tailwind Css
 ### Back-End
  * Server Framework:Express (Node.js)
  * Database: MongoDB
