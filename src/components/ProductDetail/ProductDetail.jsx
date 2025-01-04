@@ -132,7 +132,7 @@ const ProductDetail = () => {
                 <p className="text-gray-500">Saled {salesCount} items</p>
                 {/* price */}
                 <div>
-                  <p className="text-md font-bold ml-6 text-lime-600 mt-4">
+                  <p className="text-md font-bold text-lime-600 mt-4">
                     $ {product.price} / lb
                   </p>
                 </div>
