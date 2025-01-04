@@ -1,19 +1,17 @@
-import { useContext,useState } from "react";
+import { useContext, useState } from "react";
 import { AuthedUserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import * as orderService from "../../services/orderService";
 const ShoppingCart = () => {
   const navigate = useNavigate();
 
-  const { user, cart,removeFromCart, clearCart } =
+  const { user, cart, removeFromCart, clearCart } =
     useContext(AuthedUserContext);
   if (!user) {
     console.error("User not logged in.");
     navigate("/signin");
     return null;
   }
-  console.log("cart", cart);
-
   const user_id = user._id;
 
   const handleCheckout = async () => {

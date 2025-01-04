@@ -17,7 +17,6 @@ const ProductList = () => {
         setIsAdmin(false); // 默认设置为非管理员
       }
     };
-
     checkAdmin();
   }, []);
 

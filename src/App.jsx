@@ -132,22 +132,22 @@ const handleDeleteProduct = (productId) => {
       <Routes>
         {/* public Routes: */}
        
-        <Route
-          path="/"
-          element={user ? <Navigate to="/home" /> : <Landing />}
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
         <Route path="/products/productId/reviews" element={<ReviewForm />} />
-        <Route path="/cart" element={<ShoppingCart />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/orderslist" element={<OrdersPage />} />
-        <Route path="/home" element={<Home />} />
+    
+        <Route path="/cart" element={user ? <ShoppingCart /> : <Landing />} />
+
+
+        <Route path="/orders" element={user ? <Orders /> : <Landing />} />
+        <Route path="/orderslist" element={user ? <OrdersPage /> :<Landing />} />
+     
 
         {/* admin Routes */}
-        {isAdmin && (
+        {isAdmin && ( 
           <>
             <Route path="/products/:productId/edit" element={<ProductForm />} />
             <Route path="/products/new" element={<ProductForm />} />

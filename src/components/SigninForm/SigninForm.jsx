@@ -1,6 +1,6 @@
 // SigninForm
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as authService from "../../services/authService"; // import the authservice
 
@@ -23,27 +23,37 @@ const SigninForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const user = await authService.signin(formData); // TODO build signin service function
 
-      props.setUser(user);
-      navigate("/");
+    // 显示加载状态或其他准备工作
+    updateMessage(""); // 清除之前的错误信息
+
+    try {
+      const response = await authService.signin(formData);
+
+      if (response.success) {
+        // 登录成功，设置用户信息，并跳转到主页
+        props.setUser(response.user);
+        navigate("/home");
+      } else {
+        // 登录失败，显示返回的错误信息
+        updateMessage(
+          response.message || "Invalid credentials. Please try again."
+        );
+      }
     } catch (err) {
-      updateMessage(err.message);
+      // 捕获所有其他异常并显示
+      updateMessage(err.message || "Something went wrong, please try again.");
     }
   };
 
   return (
     <main className="min-h-screen flex justify-center items-center bg-gray-100 py-12">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          sign In
-        </h1>
         <p className="text-red-500 text-center mb-4">{message}</p>
         <form autoComplete="off" onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-sm font-medium text-gray-700"
             >
               Username:
@@ -87,7 +97,7 @@ const SigninForm = (props) => {
           </div>
 
           <div className="mt-4 text-center">
-            <Link to="/">
+            <Link to="/home">
               <button
                 type="button"
                 className="w-full py-2 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-100"

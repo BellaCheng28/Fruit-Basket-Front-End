@@ -1,4 +1,4 @@
-import { useContext,useState } from "react";
+import { useContext, useState } from "react";
 import { AuthedUserContext } from "../../App";
 import { Link, useLocation } from "react-router-dom";
 import { fruitBasketLogo } from "../../assets/image";
@@ -13,9 +13,9 @@ const NavBar = ({ handleSignout }) => {
       ? "inline-block text-white bg-lime-600 rounded-lg shadow-md" // 高亮样式
       : "inline-block rounded-lg font-bold text-lime-600 text-gray-300 hover:bg-lime-500 hover:text-white"; // 默认样式
   };
-   const toggleMenu = () => {
-     setIsMenuOpen(!isMenuOpen);
-   };
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <>
@@ -24,16 +24,15 @@ const NavBar = ({ handleSignout }) => {
           <nav className="flex items-center justify-between">
             {/* logo */}
             <div className="flex flex-row items-center">
-                <img src={fruitBasketLogo} alt="Logo" className="h-12 w-12 " />
-                <span className="text-lime-600  blo font-bold">Fruit Basket</span>
-             
+              <img src={fruitBasketLogo} alt="Logo" className="h-12 w-12 " />
+              <span className="text-lime-600  blo font-bold">Fruit Basket</span>
             </div>
             {/* full screen */}
             <ul className="hidden md:flex space-x-6">
               <li>
                 <Link
-                  to="/"
-                  className={`px-3 py-2 rounded ${getLinkClass("/")}`}
+                  to="/home"
+                  className={`px-3 py-2 rounded ${getLinkClass("/home")}`}
                 >
                   Home
                 </Link>
@@ -78,54 +77,41 @@ const NavBar = ({ handleSignout }) => {
                   My Orders
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/signin"
-                  className={`px-3 py-2 rounded ${getLinkClass("/")}`}
-                >
-                  Sign In
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to=""
-                  onClick={handleSignout}
-                  className={`px-3 py-2 rounded ${getLinkClass("")}`}
-                >
-                  Sign Out
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/signup"
-                  className={`px-3 py-2 rounded ${getLinkClass("")}`}
-                >
-                  Sign Up
-                </Link>
-              </li>
+              {user ? (
+                <li>
+                  <Link
+                    to=""
+                    onClick={handleSignout}
+                    className={`block px-3 py-2 ${getLinkClass("")}`}
+                  >
+                    Sign Out
+                  </Link>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/signin"
+                      className={`block px-3 py-2 ${getLinkClass("/signin")}`}
+                    >
+                      Sign In
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/signup"
+                      className={`px-3 py-2 rounded ${getLinkClass("/signup")}`}
+                    >
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
 
             {/* Sign Up 和菜单按钮 */}
             <div className="flex items-center space-x-4 md:hidden">
-              <Link
-                to="/products"
-                className="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-500"
-              >
-                Products
-              </Link>
-              <Link
-                to="/cart"
-                className="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-500"
-              >
-                Cart
-              </Link>
-              <Link
-                to="/signup"
-                className="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-500"
-              >
-                Sign Up
-              </Link>
-
               <button
                 onClick={toggleMenu}
                 className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
@@ -193,23 +179,35 @@ const NavBar = ({ handleSignout }) => {
                     My Orders
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/signin"
-                    className={`block px-3 py-2 ${getLinkClass("/signin")}`}
-                  >
-                    Sign In
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to=""
-                    onClick={handleSignout}
-                    className={`block px-3 py-2 ${getLinkClass("")}`}
-                  >
-                    Sign Out
-                  </Link>
-                </li>
+
+                {user ? (
+                  <li>
+                    <Link
+                      to=""
+                      onClick={handleSignout}
+                      className={`block px-3 py-2 ${getLinkClass("")}`}
+                    >
+                      Sign Out
+                    </Link>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <Link
+                        to="/signin"
+                        className={`block px-3 py-2 ${getLinkClass("/signin")}`}
+                      >
+                        Sign In
+                      </Link>
+                    </li>
+                    <Link
+                      to="/signup"
+                      className={`block px-3 py-2 ${getLinkClass("/signup")}`}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </ul>
             </div>
           )}
