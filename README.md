@@ -16,18 +16,17 @@ The **Fruit Basket** project is an e-commerce web application that allows users 
 ### Customer Features
 * Customers have the following functionalities:
   - Add products to their shopping cart and proceed to purchase.
+  - Leave reviews for purchased products.
   <img src="./public/image/shoppingcart.png" alt="ShoppingCart" width="600">
   <img src="./public/image/checkoutallitems.png" alt="checkoutAllItems" width="600">
   <img src="./public/image/order1.png" alt="orderDetail" width="600">
-  - Leave reviews for purchased products.
-    <img src="./public/image/writeReview.png" alt="leave review" width="600"> 
+  <img src="./public/image/writeReview.png" alt="leave review" width="600"> 
 ### Admin Features
 * Admins have additional permissions, including:
   - Adding new products to the store.
-   <img src="./public/image/createProduct.png" alt="creat product" width="600"> 
-
   - Editing and deleting existing products. 
-    <img src="./public/image/Edit and delete product.png" alt="eidt and delete" width="600"> 
+   <img src="./public/image/createProduct.png" alt="creat product" width="600"> 
+   <img src="./public/image/Edit and delete product.png" alt="eidt and delete" width="600"> 
  
 ## Technical Details
 ### Front-End
