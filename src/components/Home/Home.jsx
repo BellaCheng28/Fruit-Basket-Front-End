@@ -33,7 +33,7 @@ const Home = () => {
           loop
           autoPlay
           muted="muted"
-          src="/public/video/fruit.mp4"
+          src="https://pub.ddimg.mobi/promo-admin-service/100meindex_01_32_010a3019fe0e481aab1e37bbe3d7b3eb.mp4"
         ></video>
       </div>
     </main>
