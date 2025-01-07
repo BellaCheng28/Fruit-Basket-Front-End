@@ -140,7 +140,7 @@ const ProductForm = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm 
               focus:ring-green-700 focus:border-green-700 sm:text-sm"
             required
           />
@@ -157,7 +157,7 @@ const ProductForm = () => {
             id="image_url"
             name="image_url"
             onChange={handleImageChange}
-            className="mt-1 block w-full focus:outline-none
+            className="mt-1 block w-full 
               focus:ring-green-700 focus:border-green-700 sm:text-sm"
             required
           />
@@ -173,7 +173,7 @@ const ProductForm = () => {
             name="price"
             value={formData.price}
             onChange={handleChange}
-            className="mt-1 block w-full focus:outline-none
+            className="mt-1 block w-full 
               focus:ring-green-700 focus:border-green-700 sm:text-sm"
             required
           />
@@ -185,7 +185,7 @@ const ProductForm = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="mt-1 block w-full focus:outline-none
+            className="mt-1 block w-full 
               focus:ring-green-700 focus:border-green-700 sm:text-sm"
             required
           ></textarea>
