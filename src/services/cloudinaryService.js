@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const uploadFileToCloudinary = async (file, productName) => {
-  // console.log("productName:", productName);
+ 
   const formData = new FormData();
   formData.append("file", file); // 上传的文件
   formData.append(
     "upload_preset",
     import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
   ); // 上传预设
-  formData.append("public_id", `fruits/${productName}_${new Date().getTime()}`); // 自console.log("file type:", file.type);
+  formData.append("public_id", `fruits/${productName}_${new Date().getTime()}`); // 自
 
   try {
     const response = await axios.post(

@@ -42,11 +42,12 @@ const ReviewForm = ({ handleAddReview }) => {
         id="text-input"
         value={formData.text}
         onChange={handleChange}
-        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none
+              focus:ring-green-700 focus:border-green-700 sm:text-sm"
       />
       <button
         type="submit"
-        className="w-full py-2 px-4 bg-green-700 text-white font-semibold rounded-lg shadow-md hover:bg-green-900 disabled:bg-gray-400"
+        className="w-full py-2 px-4 bg-green-700 text-white font-semibold rounded-lg shadow-md focus:outline-none hover:bg-green-900 disabled:bg-gray-400"
       >
         Submit
       </button>
