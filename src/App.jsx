@@ -76,10 +76,11 @@ const App = () => {
         cart,
         addToCart,
         removeFromCart,
-        clearCart
+        clearCart,
+        handleSignout
       }}
     >
-      <NavBar handleSignout={handleSignout} />
+      <NavBar />
       <Routes>
         {/* public Routes: */}
         <Route path="/" element={<Home />} />

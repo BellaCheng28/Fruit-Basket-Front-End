@@ -65,7 +65,8 @@ const SigninForm = (props) => {
               value={formData.username}
               name="username"
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none
+              focus:ring-green-700 focus:border-green-700  sm:text-sm"
               required
             />
           </div>
@@ -83,7 +84,8 @@ const SigninForm = (props) => {
               value={formData.password}
               name="password"
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none
+              focus:ring-green-700 focus:border-green-700  sm:text-sm"
               required
             />
           </div>

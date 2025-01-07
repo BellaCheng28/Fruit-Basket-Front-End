@@ -3,8 +3,8 @@ import { AuthedUserContext } from "../../App";
 import { Link, useLocation } from "react-router-dom";
 import { fruitBasketLogo } from "../../assets/image";
 
-const NavBar = ({ handleSignout }) => {
-  const { cart, user } = useContext(AuthedUserContext);
+const NavBar = () => {
+  const { cart, user,handleSignout} = useContext(AuthedUserContext);
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // 判断是否是当前路由
@@ -115,7 +115,7 @@ const NavBar = ({ handleSignout }) => {
               <button
                 onClick={toggleMenu}
                 className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
-              >
+              >   
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"

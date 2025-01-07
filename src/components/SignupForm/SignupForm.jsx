@@ -39,7 +39,7 @@ const SignupForm = (props) => {
 
   return (
     <main className="flex min-h-screen justify-center items-center bg-gray-100 py-12  ">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+      <div className=" w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <p className="text-red-500 text-center mb-4">{message}</p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -55,7 +55,9 @@ const SignupForm = (props) => {
               value={username}
               name="username"
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm 
+              focus:outline-none
+              focus:ring-green-700 focus:border-green-700 sm:text-sm"
               required
             />
           </div>
@@ -73,7 +75,7 @@ const SignupForm = (props) => {
               value={password}
               name="password"
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-700  focus:border-green-700 sm:text-sm"
               required
             />
           </div>
@@ -91,7 +93,9 @@ const SignupForm = (props) => {
               value={passwordConf}
               name="passwordConf"
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm 
+              focus:outline-none
+              focus:ring-green-700 focus:border-green-700 sm:text-sm"
               required
             />
           </div>
