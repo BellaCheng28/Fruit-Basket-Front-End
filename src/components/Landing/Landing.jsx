@@ -5,8 +5,7 @@ const Landing = () => {
       <div className="bg-[#fafaf6] border border-gray-200 shadow-lg rounded-lg p-6 max-w-md ">
         <h1 className="text-2xl font-semibold text-center">
           <Link to="/signin" className="text-green-700">
-            {" "}
-            Go to sign in{" "}
+            Go to sign in
           </Link>
         </h1>
         <br />
