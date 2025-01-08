@@ -26,6 +26,7 @@ const SignupForm = (props) => {
     e.preventDefault();
 
     const newUserResponse = await authService.signup(formData);
+    console.log(newUserResponse);
     if (newUserResponse.success) {
       navigate("/signin");
     } else {

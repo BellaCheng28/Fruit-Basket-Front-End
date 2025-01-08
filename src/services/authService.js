@@ -1,26 +1,18 @@
-// src/services/authService.js
+import axiosInstance from "./middleware/axiosService";
 const BACKEND_URL = import.meta.env.VITE_EXPRESS_BACKEND_URL;
 
 const signup = async (formData) => {
   try {
-    const res = await fetch(`${BACKEND_URL}/users/signup`, {
-      method: "POST",
+    const res = await axiosInstance({
+      method:"POST",
+      url:`${BACKEND_URL}/users/signup`,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    // 检查响应的状态码
-    if (!res.ok) {
-      const errorData = await res.json();
-      // 返回自定义的错误信息
-      throw new Error(errorData.error || "Registration failed");
-    }
-
-    const json = await res.json();
+      data: formData
+    })
 
     // 判断是否包含 token
-    if (json.token) {
-      return { success: true, token: json.token };
+    if (res.data.token) {
+      return { success: true, token: res.data.token };
     } else {
       return {
         success: false,
@@ -28,13 +20,14 @@ const signup = async (formData) => {
       };
     }
   } catch (err) {
+    console.log(err);
     // 这里可以记录错误，提供更多调试信息
     console.error("Error during signup:", err);
 
     // 返回标准化的错误对象
     return {
       success: false,
-      message: err.message || "Something went wrong, please try again later",
+      message: err.response.data.error || "Something went wrong, please try again later",
     };
   }
 };
